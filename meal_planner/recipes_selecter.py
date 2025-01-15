@@ -1,6 +1,7 @@
 import g4f #type: ignore
 import recipes_adapter
 
+# Uses a Langauge Model to decide which recipes to put in the meal plan out of all those that have the desired filter(s)
 def select_from_recipes(filters: str):
     recipes = recipes_adapter.extract_text_id(filters)
 
@@ -23,6 +24,4 @@ def select_from_recipes(filters: str):
         if recipe["name"] in response:
             selected_recipes.append(recipe["id"])
 
-    print(selected_recipes)
-
-select_from_recipes("a")
+    return selected_recipes

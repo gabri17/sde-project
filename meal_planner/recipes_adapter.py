@@ -1,5 +1,6 @@
 import get_recipes
 
+# Extracts only the name of a recipe and its corresponing id from the json response of the spoonacular API
 def extract_text_id(filters: str):
     response = get_recipes.get_recipes_with_filter("a")
     if (response["number"] == 0):
