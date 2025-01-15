@@ -1,4 +1,5 @@
 from duckduckgo_search import DDGS # type: ignore
+from random import randrange
 
 def search(recipe_names: list):
 
@@ -15,8 +16,10 @@ def search(recipe_names: list):
             type_image=None,
             layout=None,
             license_image=None,
-            max_results=1,
+            max_results=2,
         )
-        image_links.append(results[0]["image"])
+
+        selected_image: int = randrange(2)
+        image_links.append(results[selected_image]["image"])
 
     return image_links
