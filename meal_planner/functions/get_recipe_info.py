@@ -1,12 +1,18 @@
-import json
 import requests #type: ignore
-import recipes_selecter
+from functions import recipes_selecter
 
 API_KEY = "ce26c380d30d4c7eb862dd149f07a2a7"
 API_URL = "https://api.spoonacular.com/recipes/informationBulk"
 
+LOCAL_API_URL = "http://127.0.0.1:8000"
+
 def get_info_from_id(filters: str):
-    selected_recipes = recipes_selecter.select_from_recipes(filters)
+    response = requests.get(LOCAL_API_URL+"/recipes-selecter", params={"filters":filters}).json()
+
+    if response["status_code"] == 404:
+        return {"status_code": 404}
+
+    selected_recipes = response["recipes"]
 
     # Process the list of ids (int) into a string
     selected_recipes = list(map(str, selected_recipes))
@@ -20,4 +26,7 @@ def get_info_from_id(filters: str):
 
     response = requests.get(API_URL, params).json()
 
-    return response
+    return {
+        "list": response,
+        "status_code": 200
+    }

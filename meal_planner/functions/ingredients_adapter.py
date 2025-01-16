@@ -1,7 +1,16 @@
-import get_recipe_info
+from functions import get_recipe_info
+import requests
+
+API_URL = "http://127.0.0.1:8000"
 
 def extract_ingredients(filters: str):
-    recipes_info = get_recipe_info.get_info_from_id(filter)
+
+    response = requests.get(API_URL+"/recipes-info", params={"filters":filters}).json()
+
+    if response["status_code"] == 404:
+        return {"status_code": 404}
+    
+    recipes_info = response["list"]
 
     # We make a dictionary where the key is the recipe title and the value is the list of ingredients
     ingredients = {}
@@ -24,4 +33,7 @@ def extract_ingredients(filters: str):
         # Finally, we add the (key, value) tuple to the dictionary
         ingredients.update({name: ingredient_list})
 
-    return ingredients
+    return {
+        "list": ingredients,
+        "status_code": 200
+    }

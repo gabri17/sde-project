@@ -1,11 +1,19 @@
 import random
 import g4f #type: ignore
-import recipes_adapter
+from functions import recipes_adapter
+import requests
+
+API_URL = "http://127.0.0.1:8000"
 
 # Uses a Langauge Model to decide which recipes to put in the meal plan out of all those that have the desired filter(s)
 def select_from_recipes(filters: str):
-    recipes = recipes_adapter.extract_text_id(filters)
+    
+    response = requests.get(API_URL+"/recipes-adapter", params={"filters":filters}).json()
 
+    if response["status_code"] == 404:
+        return {"status_code": 404}
+
+    recipes = response["recipes"]
     random.shuffle(recipes)
 
     # Only take the names of the recipes
@@ -31,4 +39,4 @@ def select_from_recipes(filters: str):
         if recipe["name"] in response:
             selected_recipes.append(recipe["id"])
 
-    return selected_recipes
+    return {"recipes": selected_recipes, "status_code": 200}

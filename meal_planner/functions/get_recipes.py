@@ -10,7 +10,7 @@ def get_recipes_with_filter(filters: str):
         "query": "",
         "diet": filters,    #//TODO change this with filters in the final application
         "apiKey": API_KEY,
-        "number": 10,    #//TODO change this with the desired number in the final application
+        "number": 100,    #//TODO change this with the desired number in the final application
     }
     response = requests.get(API_URL, params)
-    return response.json()
+    return response
