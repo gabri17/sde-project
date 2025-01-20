@@ -1,0 +1,80 @@
+from fastapi import FastAPI, HTTPException, Request
+import uvicorn #type: ignore
+from pydantic import BaseModel #type: ignore
+from typing import List, Dict
+from functions import jwt_manipulation, password_encryter, db_adapter
+
+#pip install jwt
+#pip install bcrypt
+
+#TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
+
+app = FastAPI()
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+@app.get("/protected", status_code=200)
+def protected_res(request: Request):
+    auth_header = request.headers.get("Authorization")
+    
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Unauthorized: token missing")
+
+    token = auth_header.split(" ")[1]
+    output = jwt_manipulation.verify_token(token)
+    if(output == 1):
+       raise HTTPException(status_code=401, detail="Unauthorized: invalid signature")
+    elif(output == 2):
+        raise HTTPException(status_code=401, detail="Unauthorized: token expired")
+    elif(output == 0):
+        raise HTTPException(status_code=500, detail="Internal server error")
+    else:
+        return {"message": f"Hi {output["username"]}!"}
+
+@app.post("/login", status_code=200)
+def make_login(request: LoginRequest):
+
+    #TODO adapter needed??
+
+    username = request.username
+    password = request.password
+
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Provide both username and password fields in body!")
+
+    if(db_adapter.exists_username(username)):
+        if(password_encryter.check_password(username, password)):
+            token = jwt_manipulation.generate_jwt(username)
+            return {"message": "You correctly logged in!", "access_token": token}
+        else:
+            raise HTTPException(status_code=401, detail="Authentication failed")
+    else:
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
+@app.post("/register", status_code=200)
+def make_register(request: LoginRequest):
+
+    #TODO adapter needed??
+
+    username = request.username
+    password = request.password
+
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Provide both username and password fields in body!")
+
+    if(len(password) < 8):
+        raise HTTPException(status_code=400, detail="Password must have at least length 8!")
+    elif(db_adapter.exists_username(username)):
+        raise HTTPException(status_code=400, detail=f"Username '{username}' already existing!")
+    else:
+        hashed_password = password_encryter.hash_password(password)
+        db_adapter.save_user(username, hashed_password)
+        return {"message": "User saved!", "Username": username, "Password encrypted saved": db_adapter.get_user(username)}
+    
+if __name__ == "__main__":
+    #logging configuration for the terminal
+    log_config = uvicorn.config.LOGGING_CONFIG
+    log_config["formatters"]["access"]["fmt"] = "%(asctime)s - %(levelname)s - %(message)s"
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_config=log_config)
