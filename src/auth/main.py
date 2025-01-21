@@ -1,21 +1,17 @@
-from fastapi import FastAPI, HTTPException, Request
-import uvicorn #type: ignore
+from fastapi import FastAPI, HTTPException, Request #type: ignore
 from pydantic import BaseModel #type: ignore
 from typing import List, Dict
-from functions import jwt_manipulation, password_encryter, db_adapter
+from .functions import jwt_manipulation, password_encryter, db_adapter
 
 #pip install jwt
 #pip install bcrypt
 
 #TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
 
-app = FastAPI()
-
 class LoginRequest(BaseModel):
     username: str
     password: str
 
-@app.get("/protected", status_code=200)
 def protected_res(request: Request):
     auth_header = request.headers.get("Authorization")
     
@@ -33,7 +29,6 @@ def protected_res(request: Request):
     else:
         return {"message": f"Hi {output["username"]}!"}
 
-@app.post("/login", status_code=200)
 def make_login(request: LoginRequest):
 
     #TODO adapter needed??
@@ -53,7 +48,6 @@ def make_login(request: LoginRequest):
     else:
         raise HTTPException(status_code=401, detail="Authentication failed")
 
-@app.post("/register", status_code=200)
 def make_register(request: LoginRequest):
 
     #TODO adapter needed??
@@ -72,9 +66,3 @@ def make_register(request: LoginRequest):
         hashed_password = password_encryter.hash_password(password)
         db_adapter.save_user(username, hashed_password)
         return {"message": "User saved!", "Username": username, "Password encrypted saved": db_adapter.get_user(username)}
-    
-if __name__ == "__main__":
-    #logging configuration for the terminal
-    log_config = uvicorn.config.LOGGING_CONFIG
-    log_config["formatters"]["access"]["fmt"] = "%(asctime)s - %(levelname)s - %(message)s"
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_config=log_config)

@@ -1,8 +1,8 @@
-from functions import db_adapter
+from .db_adapter import get_user
 import bcrypt
 
 def check_password(username: str, password: str) -> bool:
-    stored_password = db_adapter.get_user(username)
+    stored_password = get_user(username)
     return bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def hash_password(password: str) -> str:

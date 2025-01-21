@@ -1,5 +1,4 @@
-from functions import get_recipe_info
-import requests
+import requests #type: ignore
 
 API_URL = "http://127.0.0.1:8000"
 

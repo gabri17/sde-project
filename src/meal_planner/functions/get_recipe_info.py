@@ -1,5 +1,4 @@
 import requests #type: ignore
-from functions import recipes_selecter
 
 API_KEY = "ce26c380d30d4c7eb862dd149f07a2a7"
 API_URL = "https://api.spoonacular.com/recipes/informationBulk"

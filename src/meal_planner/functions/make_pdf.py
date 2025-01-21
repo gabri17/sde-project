@@ -1,4 +1,3 @@
-from functions import ingredients_adapter, image_searcher
 import requests #type: ignore
 
 API_URL = "http://127.0.0.1:8000"
