@@ -68,7 +68,7 @@ def make_register(request: LoginRequest):
     else:
         hashed_password = password_encryter.hash_password(password)
         db_adapter.save_user(username, hashed_password)
-        return {"message": "User saved!", "Username": username, "Password encrypted saved": db_adapter.get_user(username)}
+        return {"message": "User saved!", "Username": username, "Password encrypted saved": db_adapter.get_user(username)["password"]}
     
 if __name__ == "__main__":
     #logging configuration for the terminal

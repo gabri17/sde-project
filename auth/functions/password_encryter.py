@@ -2,7 +2,13 @@ from functions import db_adapter
 import bcrypt
 
 def check_password(username: str, password: str) -> bool:
-    stored_password = db_adapter.get_user(username)
+    stored_user = db_adapter.get_user(username)
+    
+    if(stored_user is None):
+        return False
+    
+    stored_password = stored_user["password"]
+
     return bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8'))
 
 def hash_password(password: str) -> str:
