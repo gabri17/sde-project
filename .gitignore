@@ -1,8 +1,11 @@
 /har_and_cookies
-/meal_planner/__pycache__
-/meal_planner/functions/__pycache__
+/src/meal_planner/__pycache__
+/src/meal_planner/functions/__pycache__
 /venv
 /*.pdf
-/auth/__pycache__
-/auth/functions/__pycache__
+/src/*.pdf
+/src/__pycache__
+/src/auth/__pycache__
+/src/auth/functions/__pycache__
 /venv_prova
+/src/har_and_cookies

@@ -1,6 +1,6 @@
 from duckduckgo_search import DDGS  # type: ignore
 from random import randrange
-import requests
+import requests #type: ignore
 
 def search(recipe_names):
     # Create a list which will hold all links

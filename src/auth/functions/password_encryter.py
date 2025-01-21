@@ -1,8 +1,8 @@
-from functions import db_adapter
+from .db_adapter import get_user
 import bcrypt
 
 def check_password(username: str, password: str) -> bool:
-    stored_user = db_adapter.get_user(username)
+    stored_user = get_user(username)
     
     if(stored_user is None):
         return False

@@ -1,7 +1,6 @@
 import random
 import g4f #type: ignore
-from functions import recipes_adapter
-import requests
+import requests #type: ignore
 
 API_URL = "http://127.0.0.1:8000"
 
