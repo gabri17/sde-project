@@ -3,9 +3,6 @@ from pydantic import BaseModel #type: ignore
 from typing import List, Dict
 from .functions import jwt_manipulation, password_encryter, db_adapter
 
-#pip install jwt
-#pip install bcrypt
-
 #TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
 
 class LoginRequest(BaseModel):
