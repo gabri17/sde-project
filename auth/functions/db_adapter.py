@@ -1,5 +1,6 @@
 fake_db = {}
 
+#TODO diventa un servizio?
 def exists_username(username: str) -> bool:
     return username in fake_db
 

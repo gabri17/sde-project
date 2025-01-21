@@ -30,6 +30,7 @@ pycparser==2.22
 pycryptodome==3.21.0
 pydantic==2.10.5
 pydantic_core==2.27.2
+PyJWT==2.10.1
 python-multipart==0.0.20
 reportlab==4.2.5
 requests==2.32.3
