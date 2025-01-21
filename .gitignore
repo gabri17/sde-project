@@ -6,6 +6,11 @@
 /src/*.pdf
 /src/__pycache__
 /src/auth/__pycache__
+<<<<<<< HEAD
 /src/auth/functions/__pycache__
 /venv_prova
 /src/har_and_cookies
+=======
+src//auth/functions/__pycache__
+/venv_prova
+>>>>>>> 43c2d7baa24c9a6a9132f378374d802429596577
