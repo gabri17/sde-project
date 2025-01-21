@@ -3,3 +3,6 @@
 /meal_planner/functions/__pycache__
 /venv
 /*.pdf
+/auth/__pycache__
+/auth/functions/__pycache__
+/venv_prova
