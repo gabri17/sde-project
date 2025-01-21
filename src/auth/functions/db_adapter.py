@@ -2,7 +2,7 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-URI = "mongodb+srv://progettosde:ProgettoSde2024@clustersde.haahr.mongodb.net/?retryWrites=true&w=majority&appName=ClusterSDE"
+from environment import URI
 
 def exists_username(username: str) -> bool:
     
