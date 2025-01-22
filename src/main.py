@@ -52,6 +52,11 @@ def ingredients_adapter(filters: str):
 def search_images(recipe_names: Dict[str, List[str]]):
     return meal_main.search_images(recipe_names)
 
+##########################
+######USER INTERFACE######
+##########################
+
+
 @app.get("/", status_code=200)
 def serve_index():
     file_path = os.path.join(os.path.dirname(__file__), "frontend/index.html")
@@ -72,6 +77,9 @@ def serve_profile():
     file_path = os.path.join(os.path.dirname(__file__), "frontend/profile.html")
     return FileResponse(file_path)
 
+##########################
+##########################
+##########################
 
 if __name__ == "__main__":
     #logging configuration for the terminal

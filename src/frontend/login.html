@@ -22,8 +22,8 @@
         <form id="loginForm">
 
             <div class="mb-3 mt-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                <label for="username" class="form-label">Username:</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
             </div>
             
             <div class="mb-3">
@@ -51,7 +51,7 @@
 
             const form = document.getElementById("loginForm");
 
-            const username = form.email.value; 
+            const username = form.username.value; 
             const password = form.pswd.value; 
 
             const payload = {
@@ -60,7 +60,7 @@
             }
 
             try {
-                const response = await fetch("http://localhost:8000/login", {
+                const response = await fetch("http://127.0.0.1:8000/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -74,7 +74,7 @@
                     setTimeout(() => {
                         document.getElementById("responseMessage").innerHTML = "<p class='text-success'>Login riuscito! Sarai reindirizzato alla tua pagina personale.</p>";
                     }, 1500)
-                    window.location.href='http://localhost:8000/page/profile?access_token=' + data.access_token;
+                    window.location.href='http://127.0.0.1:8000/page/profile?access_token=' + data.access_token;
                 } else {
                     document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Errore: ${data.detail}</p>`;
                 }

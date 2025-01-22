@@ -16,6 +16,7 @@
             <div class="mt-4">
                 <button class="btn btn-primary btn-lg me-3" onclick="loadData()">Visualizza!</button>
                 <!-- <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button> -->
+                <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button>
             </div>
         </div>
     </div>
@@ -36,14 +37,14 @@
             if (!token) {
                 document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Access token non trovato! Reindirizzamento alla pagina di login!</p>`;
                 setTimeout(() => {
-                    window.location.href='http://localhost:8000/page/login';
+                    window.location.href='http://127.0.0.1:8000/page/login';
                 }, 2000);
                 return;
             }
 
             try {
                 // Effettua la chiamata all'API
-                const response = await fetch("http://localhost:8000/protected", {
+                const response = await fetch("http://127.0.0.1:8000/protected", {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -57,7 +58,7 @@
                 } else if(response.status == 401) {
                     document.getElementById("responseMessage").innerHTML = `<p class='text-danger'> ${data.detail}! Reindirizzamento alla pagina di login!</p>`;
                     setTimeout(() => {
-                        window.location.href='http://localhost:8000/page/login';
+                        window.location.href='http://127.0.0.1:8000/page/login';
                     }, 2000);
                 } else {
                     document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Errore: ${data.detail}</p>`;
