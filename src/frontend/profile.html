@@ -24,6 +24,8 @@
                 <button class="btn btn-primary btn-lg me-3" onclick="loadData()">Visualizza!</button>
                 <!-- <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button> -->
                 <button class="btn btn-success btn-lg" onclick="location.href='meal-planner';">Crea il mio Meal Planner!</button>
+                <br>
+                <button class="btn btn-warning btn-lg mt-3" onclick="logout()">Logout!</button>
             </div>
         </div>
     </div>
@@ -116,6 +118,11 @@
             } catch (error) {
                 document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Errore di rete: ${error}</p>`;
             }
+        }
+    
+        function logout(){
+            document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            window.location.href='http://127.0.0.1:8000/';
         }
     </script>
 
