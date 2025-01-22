@@ -47,11 +47,33 @@
             <!-- Rows will be inserted dynamically -->
           </tbody>
         </table>
-      </div>
+    </div>
+
+    <div class="mt-5 mb-5 text-center">
+        <form id="formProcedure" class="text-center">
+            <label for="mealName" class="form-label text-secondary">Inserisci il nome del piatto per cui desideri la ricetta:</label>
+            <input type="text" id="mealName" class="form-control w-50 mx-auto">
+        </form>
+        <button type="submit" class="btn btn-primary mt-3" onclick="getProcedure()">Invia</button>
+    </div>
+
+    <div id="procedureDiv" class="mt-5 mb-5 text-center d-none">
+        <h3 id="title" class="text-dark">Informazioni</h3>
+        <p id="procedure" class="text-muted">Gestisci i tuoi pasti e pianifica in modo semplice e veloce!</p>
+    </div>
+
   
 
 
     <script>
+
+        async function getProcedure(){
+            document.getElementById("procedureDiv").classList.add("d-none")
+            const mealName = document.getElementById("mealName").value;
+            document.getElementById("title").innerHTML = mealName
+            document.getElementById("procedure").innerHTML = `Ecco qua la ricetta per: ${mealName}`;
+            document.getElementById("procedureDiv").classList.remove("d-none")
+        }
 
         const populateTable = (meal_plans) => {
             const tableBody = document.getElementById('mealPlansTable');
@@ -67,7 +89,6 @@
                 tableBody.appendChild(row);
             });
         };
-
 
         async function loadData() {
 
@@ -124,9 +145,7 @@
             document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
             window.location.href='http://127.0.0.1:8000/';
         }
-    </script>
-
-    
+    </script>    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -20,6 +20,8 @@ def make_login(request: auth_main.LoginRequest):
 def make_register(request: auth_main.LoginRequest):
     return auth_main.make_register(request)
 
+#PROCESS CENTRIC SERVICE 1
+
 @app.post("/make-pdf", status_code=200)
 def make_pdf(request: meal_main.RecipeRequest, token: str):
     return meal_main.make_pdf(request, token)
