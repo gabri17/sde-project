@@ -6,6 +6,13 @@
     <title>Meal Planner SDE</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    </script>
 </head>
 <body class="bg-light">
     
@@ -16,7 +23,7 @@
             <div class="mt-4">
                 <button class="btn btn-primary btn-lg me-3" onclick="loadData()">Visualizza!</button>
                 <!-- <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button> -->
-                <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button>
+                <button class="btn btn-success btn-lg" onclick="location.href='meal-planner';">Crea il mio Meal Planner!</button>
             </div>
         </div>
     </div>
@@ -29,10 +36,9 @@
     <script>
         async function loadData() {
 
-            document.getElementById("responseMessage").innerHTML = "";
+            var token = getCookie("access_token");
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get("access_token");
+            document.getElementById("responseMessage").innerHTML = "";
 
             if (!token) {
                 document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Access token non trovato! Reindirizzamento alla pagina di login!</p>`;

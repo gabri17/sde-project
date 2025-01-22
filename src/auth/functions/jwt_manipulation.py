@@ -18,6 +18,7 @@ def generate_jwt(username):
     return token
 
 def verify_token(token):
+    print("Verifying token: %s", token)
     try:
         payload = jwt.decode(
             token,
