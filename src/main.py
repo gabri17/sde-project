@@ -77,6 +77,11 @@ def serve_profile():
     file_path = os.path.join(os.path.dirname(__file__), "frontend/profile.html")
     return FileResponse(file_path)
 
+@app.get("/page/register", status_code=200)
+def serve_profile():
+    file_path = os.path.join(os.path.dirname(__file__), "frontend/register.html")
+    return FileResponse(file_path)
+
 ##########################
 ##########################
 ##########################

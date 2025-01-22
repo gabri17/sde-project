@@ -15,7 +15,6 @@
             <p class="lead text-secondary">Visualizza i tuoi vecchi meal planners!</p>
             <div class="mt-4">
                 <button class="btn btn-primary btn-lg me-3" onclick="loadData()">Visualizza!</button>
-                <!-- <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button> -->
                 <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button>
             </div>
         </div>
@@ -35,7 +34,7 @@
             const token = urlParams.get("access_token");
 
             if (!token) {
-                document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Access token non trovato! Reindirizzamento alla pagina di login!</p>`;
+                document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Access token non trovato! Reindirizzamento alla pagina di login!</p>`;
                 setTimeout(() => {
                     window.location.href='http://127.0.0.1:8000/page/login';
                 }, 2000);
@@ -54,17 +53,17 @@
                 const data = await response.json();
                 if (response.status == 200) {
                     console.log(data.access_token)
-                    document.getElementById("responseMessage").innerHTML = "<p class='text-success'>Dati ricevuti!</p>";
+                    document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Dati ricevuti!</p>";
                 } else if(response.status == 401) {
-                    document.getElementById("responseMessage").innerHTML = `<p class='text-danger'> ${data.detail}! Reindirizzamento alla pagina di login!</p>`;
+                    document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'> ${data.detail}! Reindirizzamento alla pagina di login!</p>`;
                     setTimeout(() => {
                         window.location.href='http://127.0.0.1:8000/page/login';
                     }, 2000);
                 } else {
-                    document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Errore: ${data.detail}</p>`;
+                    document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Errore: ${data.detail}</p>`;
                 }
             } catch (error) {
-                document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Errore di rete: errore</p>`;
+                document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Errore di rete: ${error}</p>`;
             }
         }
     </script>
