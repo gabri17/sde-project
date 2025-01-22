@@ -28,6 +28,8 @@
     <script>
         async function loadData() {
 
+            document.getElementById("responseMessage").innerHTML = "";
+
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get("access_token");
 

@@ -71,7 +71,9 @@
                 const data = await response.json();
                 if (response.status == 200) {
                     console.log(data.access_token)
-                    document.getElementById("responseMessage").innerHTML = "<p class='text-success'>Login riuscito! Benvenuto.</p>";
+                    setTimeout(() => {
+                        document.getElementById("responseMessage").innerHTML = "<p class='text-success'>Login riuscito! Sarai reindirizzato alla tua pagina personale.</p>";
+                    }, 1500)
                     window.location.href='http://localhost:8000/page/profile?access_token=' + data.access_token;
                 } else {
                     document.getElementById("responseMessage").innerHTML = `<p class='text-danger'>Errore: ${data.detail}</p>`;
