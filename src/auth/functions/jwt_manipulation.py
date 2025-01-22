@@ -7,7 +7,7 @@ SECRET_KEY = 'super_segreto_shhhh'
 def generate_jwt(username):
     payload = {
         "username": username,
-        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=30),  # Token expires in 30 seconds
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=3600),  # Token expires in 1 hour
         "iat": datetime.datetime.now(datetime.timezone.utc)
     }
 

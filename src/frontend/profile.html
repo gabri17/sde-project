@@ -24,11 +24,45 @@
         <div id="responseMessage" class="mt-3"></div>
     </div>
 
+    <div id="tableContainer" class="container d-none">
+        <table class="table table-bordered table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>Date</th>
+              <th>First Recipe</th>
+              <th>Second Recipe</th>
+            </tr>
+          </thead>
+          <tbody id="mealPlansTable">
+            <!-- Rows will be inserted dynamically -->
+          </tbody>
+        </table>
+      </div>
+  
+
 
     <script>
+
+        const populateTable = (meal_plans) => {
+            const tableBody = document.getElementById('mealPlansTable');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            meal_plans.forEach(plan => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${plan.date_meal_plan}</td>
+                <td>${plan.recipes_titles[0] || 'N/A'}</td>
+                <td>${plan.recipes_titles[1] || 'N/A'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+
         async function loadData() {
 
             document.getElementById("responseMessage").innerHTML = "";
+            document.getElementById('tableContainer').classList.add('d-none')
 
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get("access_token");
@@ -43,7 +77,7 @@
 
             try {
                 // Effettua la chiamata all'API
-                const response = await fetch("http://127.0.0.1:8000/protected", {
+                const response = await fetch("http://127.0.0.1:8000/meal_plans", {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -52,8 +86,19 @@
 
                 const data = await response.json();
                 if (response.status == 200) {
-                    console.log(data.access_token)
-                    document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Dati ricevuti!</p>";
+                    
+                    if(data["meal_plans_number"] == 0){
+                        document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Al momento hai 0 meal plans!</p>"
+                    }
+                    else {
+                        const n_mp = data["meal_plans_number"];
+                        document.getElementById("responseMessage").innerHTML = `<p class='alert alert-success'>Al momento hai ${n_mp} meal plans!</p>`
+
+                        const meal_plans = data["data"];
+                        populateTable(meal_plans);
+                        document.getElementById('tableContainer').classList.remove('d-none')
+                    }
+
                 } else if(response.status == 401) {
                     document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'> ${data.detail}! Reindirizzamento alla pagina di login!</p>`;
                     setTimeout(() => {
