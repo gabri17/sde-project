@@ -8,9 +8,9 @@ import os
 
 app = FastAPI()
 
-@app.get("/protected", status_code=200)
+@app.get("/meal_plans", status_code=200)
 def protected_res(request: Request):
-    return auth_main.protected_res(request)
+    return auth_main.all_meal_plans(request)
 
 @app.post("/login", status_code=200)
 def make_login(request: auth_main.LoginRequest):
@@ -75,6 +75,11 @@ def serve_login():
 @app.get("/page/profile", status_code=200)
 def serve_profile():
     file_path = os.path.join(os.path.dirname(__file__), "frontend/profile.html")
+    return FileResponse(file_path)
+
+@app.get("/page/register", status_code=200)
+def serve_profile():
+    file_path = os.path.join(os.path.dirname(__file__), "frontend/register.html")
     return FileResponse(file_path)
 
 ##########################

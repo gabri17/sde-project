@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request #type: ignore
 from pydantic import BaseModel #type: ignore
 from typing import List, Dict
 from .functions import jwt_manipulation, password_encryter, db_adapter
+from datetime import datetime
 
 #TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
 
@@ -9,7 +10,7 @@ class LoginRequest(BaseModel):
     username: str
     password: str
 
-def protected_res(request: Request):
+def all_meal_plans(request: Request):
     auth_header = request.headers.get("Authorization")
     
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -24,7 +25,13 @@ def protected_res(request: Request):
     elif(output == 0):
         raise HTTPException(status_code=500, detail="Internal server error")
     else:
-        return {"message": f"Hi {output["username"]}!"}
+        res = db_adapter.get_meal_plans_by_user(output["username"]) #usare un adapter anche per questo
+        
+        if(res is None):
+            return {"data": []}
+        else:
+            list_parsed = db_adapter.manipulate(res)
+            return {"meal_plans_number": len(list_parsed), "data": sorted(list_parsed, key=lambda x: datetime.strptime(x['date_meal_plan'], '%Y-%m-%d %H:%M:%S'), reverse=True)}
 
 def make_login(request: LoginRequest):
 
