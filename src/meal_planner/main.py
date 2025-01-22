@@ -21,27 +21,12 @@ import os
 from pydantic import BaseModel #type: ignore
 from typing import List, Dict
 
+from auth.functions import jwt_manipulation
+
 # This class constitutes the body of the POST request make-pdf
 class RecipeRequest(BaseModel):
     ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
     image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
-
-SECRET_KEY = 'super_segreto_shhhh'
-def verify_token(token):
-    try:
-        payload = jwt.decode(
-            token,
-            key=SECRET_KEY,
-            algorithms=['HS256', ]
-        )
-        return payload
-    except ExpiredSignatureError as error:
-        return 2
-    except InvalidSignatureError as error:
-        return 1
-    except Exception as error:
-        print(error)
-        return  0
 
 # Given an ingredient list and image links, create a PDF with the daily meal plan
 def make_pdf(request: RecipeRequest, token: str = "", upload: bool = True):
@@ -55,7 +40,7 @@ def make_pdf(request: RecipeRequest, token: str = "", upload: bool = True):
         # Check if authenticated
         if token != "":
             # A token has been inserted, validate it
-            result = verify_token(token)
+            result = jwt_manipulation.verify_token(token)
 
             if result != 1 and result != 2 and result != 0:
                 # Token is valid, extract username
