@@ -19,12 +19,12 @@ def make_register(request: auth_main.LoginRequest):
     return auth_main.make_register(request)
 
 @app.post("/make-pdf", status_code=200)
-def make_pdf(request: meal_main.RecipeRequest):
-    return meal_main.make_pdf(request)
+def make_pdf(request: meal_main.RecipeRequest, token: str):
+    return meal_main.make_pdf(request, token)
 
 @app.get("/meal-plan", status_code=200)
-def make_meal_plan(filters: str):
-    return meal_main.make_meal_plan(filters)
+def make_meal_plan(filters: str, token: str = ""):
+    return meal_main.make_meal_plan(filters, token)
 
 @app.get("/get-recipes", status_code=200)
 def get_recipes(filters: str):

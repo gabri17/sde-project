@@ -10,3 +10,5 @@
 /venv_prova
 /src/har_and_cookies
 /src/environment.py
+/src/meal_planner/functions/environment.py
+/src/auth/functions/environment.py

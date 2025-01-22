@@ -34,8 +34,13 @@ def select_from_recipes(filters: str):
     
     # Get ids of selected recipes
     selected_recipes = []
+    counter = 0
     for recipe in recipes:
         if recipe["name"] in response:
-            selected_recipes.append(recipe["id"])
+            counter+=1
+            if counter <= 2:
+                selected_recipes.append(recipe["id"])
+            else:
+                break
 
     return {"recipes": selected_recipes, "status_code": 200}

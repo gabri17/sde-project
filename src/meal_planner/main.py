@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Response, status #type: ignore
-from fastapi.responses import FileResponse #type: ignore
+from fastapi.responses import FileResponse
+import jwt #type: ignore
+from jwt.exceptions import InvalidSignatureError, ExpiredSignatureError
 from .functions import make_pdf as pdf
 from .functions import get_recipes as getter
 from .functions import recipes_adapter as r_adapter
@@ -24,8 +26,47 @@ class RecipeRequest(BaseModel):
     ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
     image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
 
+SECRET_KEY = 'super_segreto_shhhh'
+def verify_token(token):
+    try:
+        payload = jwt.decode(
+            token,
+            key=SECRET_KEY,
+            algorithms=['HS256', ]
+        )
+        return payload
+    except ExpiredSignatureError as error:
+        return 2
+    except InvalidSignatureError as error:
+        return 1
+    except Exception as error:
+        print(error)
+        return  0
+
 # Given an ingredient list and image links, create a PDF with the daily meal plan
-def make_pdf(request: RecipeRequest):
+def make_pdf(request: RecipeRequest, token: str = "", upload: bool = True):
+    """
+    Starting from a RecipeRequest (ingredients and images) creates a .pdf file.
+    If upload = true and the user is authenticated, the meal_plan is also uploaded online
+    """
+    
+    if upload == True:
+        # If user is authenticated, add meal_plan to his history
+        # Check if authenticated
+        if token != "":
+            # A token has been inserted, validate it
+            result = verify_token(token)
+
+            if result != 1 and result != 2 and result != 0:
+                # Token is valid, extract username
+                username = result["username"]
+
+                # Insert the meal plan in the DB for that user
+                from .functions.db_adapter import insert_plan_db
+                result = insert_plan_db(username, request)
+                
+                if (result["status_code"] == 404):
+                    return {"status_code": 404}
 
     ingredients = request.ingredients
     image_links = request.image_links
@@ -121,8 +162,11 @@ def make_pdf(request: RecipeRequest):
     else:
         return {"status_code": 404}
 
-def make_meal_plan(filters: str):
-    response = pdf.plan_to_pdf(filters)
+def make_meal_plan(filters: str, token: str):
+    """
+    Given a set of filters and a token (if authenticated), if succesfull returns a .pdf file containing a meal plan
+    """
+    response = pdf.plan_to_pdf(filters, token)
 
     if response["status_code"] == 200:
         return FileResponse(
@@ -135,9 +179,8 @@ def make_meal_plan(filters: str):
         return {"status_code": 400}
 
 def get_recipes(filters: str):
-    #//TODO change N
     """
-    Calls the spoonacular API and asks for N recipes with the given filter.
+    Calls the spoonacular API and asks for 100 recipes with the given filter.
     Returns a JSON containing those recipes
     """
     response = getter.get_recipes_with_filter(filters)

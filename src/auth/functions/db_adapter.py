@@ -2,7 +2,7 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-from environment import URI
+from meal_planner.functions.environment import URI
 
 def exists_username(username: str) -> bool:
     
