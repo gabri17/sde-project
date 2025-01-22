@@ -3,6 +3,8 @@ from fastapi import FastAPI, HTTPException, Request #type: ignore
 from auth import main as auth_main
 from meal_planner import main as meal_main
 import uvicorn #type: ignore
+from fastapi.responses import FileResponse
+import os
 
 app = FastAPI()
 
@@ -49,6 +51,27 @@ def ingredients_adapter(filters: str):
 @app.post("/image-searcher", status_code=200)
 def search_images(recipe_names: Dict[str, List[str]]):
     return meal_main.search_images(recipe_names)
+
+@app.get("/", status_code=200)
+def serve_index():
+    file_path = os.path.join(os.path.dirname(__file__), "frontend/index.html")
+    return FileResponse(file_path)
+
+@app.get("/page/meal-planner", status_code=200)
+def serve_meal_planner():
+    file_path = os.path.join(os.path.dirname(__file__), "frontend/meal-planner.html")
+    return FileResponse(file_path)
+
+@app.get("/page/login", status_code=200)
+def serve_login():
+    file_path = os.path.join(os.path.dirname(__file__), "frontend/login.html")
+    return FileResponse(file_path)
+
+@app.get("/page/profile", status_code=200)
+def serve_profile():
+    file_path = os.path.join(os.path.dirname(__file__), "frontend/profile.html")
+    return FileResponse(file_path)
+
 
 if __name__ == "__main__":
     #logging configuration for the terminal
