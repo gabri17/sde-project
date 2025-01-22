@@ -6,15 +6,143 @@
     <title>Meal Planner SDE</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .diet-checkbox {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .diet-checkbox input {
+            margin-right: 10px;
+        }
+
+        .diet-checkbox:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+    <script>
+        const API_URL = "http://127.0.0.1:8000/meal-plan?filters="
+    </script>
 </head>
 <body class="bg-light">
     
     <div class="container mt-5">
         <div class="text-center">
-            <h2 class="display-4 text-primary">Inserisci i filtri di tuo interesse!</h1>      
+            <h2 class="display-4 text-primary">Inserisci i filtri di tuo interesse!</h2>
+                
+            <div class="mt-4">
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="glutenFree" name="diet" value="Gluten Free">
+                    <label for="glutenFree" class="mb-0">Gluten Free</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="ketogenic" name="diet" value="Ketogenic">
+                    <label for="ketogenic" class="mb-0">Ketogenic</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="vegetarian" name="diet" value="Vegetarian">
+                    <label for="vegetarian" class="mb-0">Vegetarian</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="lactoVegetarian" name="diet" value="Lacto-Vegetarian">
+                    <label for="lactoVegetarian" class="mb-0">Lacto-Vegetarian</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="ovoVegetarian" name="diet" value="Ovo-Vegetarian">
+                    <label for="ovoVegetarian" class="mb-0">Ovo-Vegetarian</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="vegan" name="diet" value="Vegan">
+                    <label for="vegan" class="mb-0">Vegan</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="pescetarian" name="diet" value="Pescetarian">
+                    <label for="pescetarian" class="mb-0">Pescetarian</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="paleo" name="diet" value="Paleo">
+                    <label for="paleo" class="mb-0">Paleo</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="primal" name="diet" value="Primal">
+                    <label for="primal" class="mb-0">Primal</label>
+                </div>
+                <div class="diet-checkbox">
+                    <input type="checkbox" id="whole30" name="diet" value="Whole30">
+                    <label for="whole30" class="mb-0">Whole30</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary mt-4" onclick="processSelection()">Create</button>  
+        
+            <div id="loading" class="text-center mt-4" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading, please wait...</p>
+            </div>
         </div>
     </div>
     
+    <script>
+        async function processSelection() {
+            const loadingElement = document.getElementById("loading");
+            loadingElement.style.display = "block"; // Show the loading spinner
+
+            const selectedDiets = Array.from(document.querySelectorAll('input[name="diet"]:checked'))
+                .map(checkbox => checkbox.value)
+                .join(",");
+
+            const GET_Request = API_URL + selectedDiets
+            // Send a GET request to create the Meal Plan
+            try {
+                const response = await fetch(GET_Request, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                // Extract the file from the response
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                // Create a temporary anchor element to start the download
+                const a = document.createElement("a");
+                a.href = url;
+
+                // Use Content-Disposition header to infer filename if provided
+                const contentDisposition = response.headers.get("Content-Disposition");
+                const filename = contentDisposition
+                    ? contentDisposition.split("filename=")[1]?.replace(/"/g, "") || "download"
+                    : "download";
+
+                a.download = filename; // Set the filename for the download
+                document.body.appendChild(a); // Append to DOM
+                a.click(); // Trigger the download
+                a.remove(); // Remove the anchor from DOM after the download
+
+                // Release the object URL
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Error fetching file:", error);
+                alert("Failed to fetch the file. Please try again.");
+            } finally {
+                loadingElement.style.display = "none"; // Hide the loading spinner
+            }
+        }
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
