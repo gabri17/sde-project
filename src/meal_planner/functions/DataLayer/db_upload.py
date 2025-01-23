@@ -11,6 +11,7 @@ class RecipeRequest(BaseModel):
     image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
 
 def insert_plan_db(username: str, recipes: RecipeRequest):
+
     client = MongoClient(URI, server_api=ServerApi('1'))
 
     try:
@@ -24,7 +25,6 @@ def insert_plan_db(username: str, recipes: RecipeRequest):
     # Start by verifying that the username exists
     users_collection = db['Users']
     query = {"username": username}
-    print("Before query")
     result = users_collection.find_one(query) 
     if result is None:
         print("No user found")
@@ -37,8 +37,8 @@ def insert_plan_db(username: str, recipes: RecipeRequest):
     plans_collection = db['MealPlans']
 
     # Extract data from RecipeRequest
-    ingredients = recipes.ingredients
-    image_links = recipes.image_links
+    ingredients = recipes["ingredients"]
+    image_links = recipes["image_links"]
 
     # Get current datetime and use it to differentiate meal_plans for the same user
     current_datetime = datetime.datetime.now()
