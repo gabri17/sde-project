@@ -2,11 +2,19 @@ from typing import Dict, List
 from fastapi import FastAPI, Response, Request, status #type: ignore
 from auth import main as auth_main
 from meal_planner import main as meal_main
+from meal_planner.functions.ProcessCentricLayer.meal_plan import meal_plan
 import uvicorn #type: ignore
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse #type: ignore
 import os
 
 app = FastAPI()
+
+# What follows is the list of all the endpoints used by our Web Service
+# These are only the wrappers for the actual functions. The description of each function is described in the modules of the 2 Process Centric Services
+
+#################################
+#   PROCESS CENTRIC SERVICE 1   #
+#################################
 
 @app.get("/meal_plans", status_code=200)
 def meal_plans(request: Request):
@@ -32,18 +40,25 @@ def get_translation(request: auth_main.TranslationRequest):
 def get_procedure_translated(request: auth_main.ProcedureRequest):
     return auth_main.get_translated_procedure_from_recipe(request)
 
-#PROCESS CENTRIC SERVICE 1
+#################################
+#   PROCESS CENTRIC SERVICE 2   #
+#################################
 
 @app.post("/make-pdf", status_code=200)
-def make_pdf(request: meal_main.RecipeRequest, token: str):
-    return meal_main.make_pdf(request, token)
+def make_pdf(request: meal_main.RecipeRequest):
+    return meal_main.make_pdf(request)
 
 @app.get("/meal-plan", status_code=200)
 def make_meal_plan(filters: str, response: Response, token: str = ""):
-    result = meal_main.make_meal_plan(filters, token)
-    if isinstance(result, FileResponse):
+    result = meal_plan(filters, token)
+    if result["status_code"] == 201:
         response.status_code = status.HTTP_201_CREATED
-        return result
+        return FileResponse(
+            path="./DailyMealPlan.pdf",
+            media_type="application/pdf",
+            filename="DailyMealPlan.pdf",
+            headers={"Content-Disposition": "attachment; filename=DailyMealPlan.pdf"}
+        )
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
 
@@ -51,30 +66,29 @@ def make_meal_plan(filters: str, response: Response, token: str = ""):
 def get_recipes(filters: str):
     return meal_main.get_recipes(filters)
 
-@app.get("/recipes-adapter", status_code=200)
-def recipes_adapter(filters: str):
-    return meal_main.recipes_adapter(filters)
+@app.post("/recipes-adapter", status_code=200)
+def recipes_adapter(recipe_list: meal_main.Recipes):
+    return meal_main.recipes_adapter(recipe_list)
 
-@app.get("/recipes-selecter", status_code=200)
-def select_recipes(filters: str):
-    return meal_main.select_recipes(filters)
+@app.post("/recipes-selecter", status_code=200)
+def select_recipes(recipes: meal_main.RecipesTitles):
+    return meal_main.select_recipes(recipes)
 
-@app.get("/recipes-info", status_code=200)
-def recipes_info(filters: str):
-    return meal_main.recipes_info(filters)
+@app.post("/recipes-info", status_code=200)
+def recipes_info(selected_recipes: meal_main.SelectedRecipes):
+    return meal_main.recipes_info(selected_recipes)
 
-@app.get("/ingredients-adapter", status_code=200)
-def ingredients_adapter(filters: str):
-    return meal_main.ingredients_adapter(filters)
+@app.post("/ingredients-adapter", status_code=200)
+def ingredients_adapter(recipes_info: meal_main.RecipesInfo):
+    return meal_main.ingredients_adapter(recipes_info)
 
 @app.post("/image-searcher", status_code=200)
 def search_images(recipe_names: Dict[str, List[str]]):
     return meal_main.search_images(recipe_names)
 
 ##########################
-######USER INTERFACE######
+#     USER INTERFACE     #
 ##########################
-
 
 @app.get("/", status_code=200)
 def serve_index():
@@ -102,7 +116,7 @@ def serve_profile():
     return FileResponse(file_path)
 
 ##########################
-##########################
+#          MAIN          #
 ##########################
 
 if __name__ == "__main__":
