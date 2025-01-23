@@ -1,6 +1,6 @@
 import requests #type: ignore
 from auth.functions import jwt_manipulation
-from meal_planner.functions.DataLayer.db_upload import insert_plan_db
+from meal_planner.DataLayer.db_upload import insert_plan_db
 
 API_URL = "http://127.0.0.1:8000"
 

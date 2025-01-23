@@ -7,10 +7,10 @@ import os
 
 from meal_planner import interfaces
 
-from meal_planner.functions.AdapterLayer import image_searcher, ingredients_adapter as i_a, recipes_adapter as r_adapter
-from meal_planner.functions.DataLayer import get_recipe_info as i_getter, get_recipes as r_getter
-from meal_planner.functions.BusinessLayer import recipes_selecter as r_selecter, make_pdf as pdf_maker
-from meal_planner.functions.ProcessCentricLayer.meal_plan import meal_plan
+from meal_planner.AdapterLayer import image_searcher, ingredients_adapter as i_a, recipes_adapter as r_adapter
+from meal_planner.DataLayer import get_recipe_info as i_getter, get_recipes as r_getter
+from meal_planner.BusinessLayer import recipes_selecter as r_selecter, make_pdf as pdf_maker
+from meal_planner.ProcessCentricLayer.meal_plan import meal_plan
 
 app = FastAPI()
 

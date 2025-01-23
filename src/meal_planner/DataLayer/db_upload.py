@@ -3,7 +3,7 @@ from typing import Dict, List
 from pydantic import BaseModel
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-from meal_planner.functions.DataLayer.environment import URI
+from meal_planner.DataLayer.environment import URI
 
 from meal_planner.interfaces import RecipeRequest
 
