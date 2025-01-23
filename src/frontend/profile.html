@@ -106,7 +106,8 @@
                     document.getElementById("procedureDiv").classList.remove("d-none")
 
                 } else {
-                    document.getElementById("title").innerHTML = `<p class='alert alert-danger'>Errore: ${data.detail}</p>`;
+                    document.getElementById("title").innerHTML = `Errore: ${data.detail}`;
+                    document.getElementById("procedureDiv").classList.remove("d-none")
                 }
             } catch (error) {
                 document.getElementById("title").innerHTML = `<p class='alert alert-danger'>Errore di rete: ${error}</p>`;
