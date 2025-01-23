@@ -3,6 +3,7 @@ from typing import Dict, List
 from pydantic import BaseModel
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from meal_planner.functions.environment import URI
 
 # Struct to encapsulate all meal_plan data
 class RecipeRequest(BaseModel):
@@ -10,7 +11,6 @@ class RecipeRequest(BaseModel):
     image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
 
 def insert_plan_db(username: str, recipes: RecipeRequest):
-    URI="mongodb+srv://progettosde:NuovaPasswordSuperSicura@clustersde.haahr.mongodb.net/?retryWrites=true&w=majority&appName=ClusterSDE"
     client = MongoClient(URI, server_api=ServerApi('1'))
 
     try:

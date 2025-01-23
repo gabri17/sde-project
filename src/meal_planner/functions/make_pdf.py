@@ -4,6 +4,10 @@ API_URL = "http://127.0.0.1:8000"
 
 def plan_to_pdf(filters: str, token: str):
     ingredients_response = requests.get(API_URL+"/ingredients-adapter", params={"filters":filters}).json()
+
+    if ingredients_response["status_code"] == 404:
+        return {"status_code": 404}
+
     ingredients = ingredients_response["list"]
 
     # Make a list only containing the names
@@ -31,4 +35,4 @@ def plan_to_pdf(filters: str, token: str):
         # Save the file if returned as a response
         return response
     else:
-        return {"status_code": 400}
+        return {"status_code": 404}

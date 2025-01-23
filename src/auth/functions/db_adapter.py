@@ -1,8 +1,7 @@
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-
-from environment import URI
+from auth.functions.environment import URI
 
 def exists_username(username: str) -> bool:
     

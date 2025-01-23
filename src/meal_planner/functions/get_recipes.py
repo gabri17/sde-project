@@ -8,7 +8,7 @@ API_URL = "https://api.spoonacular.com/recipes/complexSearch"
 def get_recipes_with_filter(filters: str):
     params = {
         "query": "",
-        "diet": filters,    #//TODO change this with filters in the final application
+        "diet": filters,
         "apiKey": API_KEY,
         "number": 100,    #//TODO change this with the desired number in the final application
     }

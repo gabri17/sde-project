@@ -1,5 +1,5 @@
 from typing import Dict, List
-from fastapi import FastAPI, HTTPException, Request #type: ignore
+from fastapi import FastAPI, Response, Request, status #type: ignore
 from auth import main as auth_main
 from meal_planner import main as meal_main
 import uvicorn #type: ignore
@@ -27,8 +27,11 @@ def make_pdf(request: meal_main.RecipeRequest, token: str):
     return meal_main.make_pdf(request, token)
 
 @app.get("/meal-plan", status_code=200)
-def make_meal_plan(filters: str, token: str = ""):
-    return meal_main.make_meal_plan(filters, token)
+def make_meal_plan(filters: str, response: Response, token: str = ""):
+    result = meal_main.make_meal_plan(filters, token)
+    if result is FileResponse:
+        return result
+    response.status_code = status.HTTP_404_NOT_FOUND
 
 @app.get("/get-recipes", status_code=200)
 def get_recipes(filters: str):

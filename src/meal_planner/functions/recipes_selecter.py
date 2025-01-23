@@ -1,5 +1,4 @@
 import random
-import g4f #type: ignore
 import requests #type: ignore
 
 API_URL = "http://127.0.0.1:8000"
@@ -13,34 +12,17 @@ def select_from_recipes(filters: str):
         return {"status_code": 404}
 
     recipes = response["recipes"]
+
+    # Shuffle the recipes
     random.shuffle(recipes)
 
-    # Only take the names of the recipes
+    # Only take the ids of the first 2 recipes
     counter = 0
-    recipes_names = ""
-    for recipe in recipes:
-        recipes_names += recipe["name"] + "\n"
-        counter += 1
-        if counter >= 5:
-            break
-
-    # Pass the names to ChatGPT, which will choose the recipes to put in the meal plan
-    g4f.check_version = False # Disable automatic version checking
-    response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_4,                                                                               #//TODO The number 2 here is arbitrary
-        messages=[{"role": "user", "content": "Given the following list of recipes:\n\n" + recipes_names + "\nChoose 2 random recipes and only output their name, one per line. In order to actually make the choice random, please choose the recipes based on randomly generated numbers using as seed time(NULL)"}],
-    )
-    ' '.join(response)
-    
-    # Get ids of selected recipes
     selected_recipes = []
-    counter = 0
     for recipe in recipes:
-        if recipe["name"] in response:
-            counter+=1
-            if counter <= 2:
-                selected_recipes.append(recipe["id"])
-            else:
-                break
+        selected_recipes.append(recipe["id"])
+        counter += 1
+        if counter >= 2:
+            break
 
     return {"recipes": selected_recipes, "status_code": 200}

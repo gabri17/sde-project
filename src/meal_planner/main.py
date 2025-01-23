@@ -35,16 +35,12 @@ def make_pdf(request: RecipeRequest, token: str = "", upload: bool = True):
     If upload = true and the user is authenticated, the meal_plan is also uploaded online
     """
     
-    print("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEET")
     if upload == True:
         # If user is authenticated, add meal_plan to his history
         # Check if authenticated
         if token != "":
-            print("UPLOADING RECIPE")
             # A token has been inserted, validate it
-            print(token)
             result = jwt_manipulation.verify_token(token)
-            print(result)
 
             if result != 1 and result != 2 and result != 0:
                 # Token is valid, extract username
@@ -165,7 +161,7 @@ def make_meal_plan(filters: str, token: str):
             headers={"Content-Disposition": "attachment; filename=DailyMealPlan.pdf"}
         )
     else:
-        return {"status_code": 400}
+        return {"status_code": 404}
 
 def get_recipes(filters: str):
     """

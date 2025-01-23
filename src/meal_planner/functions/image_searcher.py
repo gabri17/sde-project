@@ -1,6 +1,9 @@
 from duckduckgo_search import DDGS  # type: ignore
 from random import randrange
-import requests #type: ignore
+import requests  # type: ignore
+from PIL import Image  # type: ignore
+from io import BytesIO
+
 
 def search(recipe_names):
     # Create a list which will hold all links
@@ -22,15 +25,16 @@ def search(recipe_names):
             max_results=100,
         )
 
-        selected_image: int = randrange(100)
-        while is_valid_image_url(results[selected_image]["image"]) == False:
+        # Keep trying different images until a valid one is found
+        while True:
             selected_image: int = randrange(100)
+            url = results[selected_image]["image"]
 
-        url = results[selected_image]["image"]
+            if is_valid_image_url(url) and try_open_image(url):
+                image_links.append(url)
+                break
 
-        image_links.append(url)
-
-    return {"links":image_links, "status_code": 200}
+    return {"links": image_links, "status_code": 200}
 
 
 def is_valid_image_url(url: str) -> bool:
@@ -38,9 +42,21 @@ def is_valid_image_url(url: str) -> bool:
     try:
         response = requests.head(url, timeout=10)
         response.raise_for_status()
-        
+
         # Check Content-Type header
         content_type = response.headers.get("Content-Type", "")
         return "image" in content_type
     except (requests.RequestException, KeyError):
+        return False
+
+
+def try_open_image(url: str) -> bool:
+    """Download the image and try to open it."""
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        image = Image.open(BytesIO(response.content))
+        image.verify()  # Verify the image integrity
+        return True
+    except (requests.RequestException, IOError):
         return False

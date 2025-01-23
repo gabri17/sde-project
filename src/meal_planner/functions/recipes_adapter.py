@@ -6,7 +6,8 @@ API_URL = "http://127.0.0.1:8000"
 def extract_text_id(filters: str):
     response = requests.get(API_URL+"/get-recipes", params={"filters":filters}).json()
     
-    if (response["number"] == 0):
+    print("NUMERO RICETTE SELEZIONATE: %d", len(response["results"]))
+    if (len(response["results"]) < 2):
         return {"status_code": 404}
 
     recipes = []

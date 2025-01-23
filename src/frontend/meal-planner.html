@@ -148,7 +148,7 @@
                 URL.revokeObjectURL(url);
             } catch (error) {
                 console.error("Error fetching file:", error);
-                alert("Failed to fetch the file. Please try again.");
+                alert("Not enough recipes could be found with the selected parameters");
             } finally {
                 loadingElement.style.display = "none"; // Hide the loading spinner
             }
