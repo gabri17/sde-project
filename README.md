@@ -12,7 +12,7 @@ Create virtual environment:
 Launch virtual environment
 - Linux:
     `source venv/bin/activate`
-- Windows:
+- Windows (on CMD and not on PowerShell):
     `cd venv/Scripts & activate.bat & cd ../..`
 
 Install all depencies:

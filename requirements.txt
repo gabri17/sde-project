@@ -13,6 +13,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
 cryptography==44.0.0
+deepl==1.21.0
 dnspython==1.16.0
 duckduckgo_search==7.2.1
 fastapi==0.115.6

@@ -9,7 +9,7 @@ import os
 app = FastAPI()
 
 @app.get("/meal_plans", status_code=200)
-def protected_res(request: Request):
+def meal_plans(request: Request):
     return auth_main.all_meal_plans(request)
 
 @app.post("/login", status_code=200)
@@ -21,8 +21,16 @@ def make_register(request: auth_main.LoginRequest):
     return auth_main.make_register(request)
 
 @app.get("/procedure", status_code=200)
-def protected_res(recipe: str):
+def get_procedure(recipe: str):
     return auth_main.get_procedure_from_recipe(recipe)
+
+@app.post("/translate", status_code=200)
+def get_translation(request: auth_main.TranslationRequest):
+    return auth_main.translate(request)
+
+@app.post("/procedure_translated", status_code=200)
+def get_procedure_translated(request: auth_main.ProcedureRequest):
+    return auth_main.get_translated_procedure_from_recipe(request)
 
 #PROCESS CENTRIC SERVICE 1
 

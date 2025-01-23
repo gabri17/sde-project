@@ -72,6 +72,44 @@
         <form id="formProcedure" class="text-center">
             <label for="mealName" class="form-label text-secondary">Inserisci il nome del piatto per cui desideri la ricetta:</label>
             <input type="text" id="mealName" class="form-control w-50 mx-auto">
+
+            <div class="mt-3">
+                <p class="text-secondary">Seleziona la lingua della traduzione:</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="IT" value="IT" checked>
+                    <label class="form-check-label" for="IT">Italiano</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="EN-GB" value="EN-GB">
+                    <label class="form-check-label" for="EN-GB">Inglese</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="FR" value="FR">
+                    <label class="form-check-label" for="FR">Francese</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="DE" value="DE">
+                    <label class="form-check-label" for="DE">Tedesco</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="ES" value="ES">
+                    <label class="form-check-label" for="ES">Spagnolo</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="PT-PT" value="PT-PT">
+                    <label class="form-check-label" for="PT-PT">Portoghese</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="NL" value="NL">
+                    <label class="form-check-label" for="NL">Olandese</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="language" id="ZH" value="ZH">
+                    <label class="form-check-label" for="ZH">Cinese mandarino</label>
+                </div>
+            </div>
+        
+
         </form>
         <button type="submit" class="btn btn-primary mt-3" onclick="getProcedure()">Invia</button>
     </div>
@@ -90,19 +128,33 @@
 
         async function getProcedure(){
             document.getElementById("procedureDiv").classList.add("d-none")
+            document.getElementById("title").innerHTML = ""
+                    document.getElementById("procedure").innerHTML = "";
             const mealName = document.getElementById("mealName").value;
+            const language = document.querySelector('input[name="language"]:checked').value;
+
 
             try {
                 // Effettua la chiamata all'API
-                const response = await fetch("http://127.0.0.1:8000/procedure?recipe=" + mealName, {
+                /* const response = await fetch("http://127.0.0.1:8000/procedure?recipe=" + mealName, {
                     method: "GET"
+                }); */
+                const response = await fetch("http://127.0.0.1:8000/procedure_translated", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body : JSON.stringify({
+                        'recipeName': mealName,
+                        'target_lang': language
+                    })
                 });
 
                 const data = await response.json();
                 if (response.status == 200) {
                     
                     document.getElementById("title").innerHTML = mealName
-                    document.getElementById("procedure").innerHTML = data;
+                    document.getElementById("procedure").innerHTML = data["translated_text"];
                     document.getElementById("procedureDiv").classList.remove("d-none")
 
                 } else {
