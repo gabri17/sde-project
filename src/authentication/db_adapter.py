@@ -1,7 +1,7 @@
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
-from .environment import URI
+from environment import URI
 
 #torna tutti i meal plans di un utente
 def get_meal_plans_by_user(username: str):

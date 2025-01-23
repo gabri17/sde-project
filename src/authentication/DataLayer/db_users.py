@@ -1,4 +1,4 @@
-from authentication.environment import URI
+from environment import URI
 from pymongo.mongo_client import MongoClient
 
 def exists_username(username: str) -> bool:
