@@ -123,4 +123,4 @@ if __name__ == "__main__":
     #logging configuration for the terminal
     log_config = uvicorn.config.LOGGING_CONFIG
     log_config["formatters"]["access"]["fmt"] = "%(asctime)s - %(levelname)s - %(message)s"
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True, log_config=log_config)
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True, log_config=log_config)
