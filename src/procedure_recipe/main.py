@@ -1,15 +1,13 @@
 from fastapi import FastAPI, HTTPException, Request #type: ignore
 from pydantic import BaseModel #type: ignore
 from typing import List, Dict
-from authentication import jwt_manipulation, password_encryter, db_adapter
+from authentication import db_adapter
 from datetime import datetime
 from procedure_recipe import get_recipe, get_id_from_recipe, get_info_from_id, get_procedure_text_from_info
 import requests
 #TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
 
-from authentication.interfaces import LoginRequest
-from authentication.DataLayer import db_users
-from authentication.BusinessLayer import jwt_manipulation, password_encryter
+from authentication.BusinessLayer import jwt_manipulation
 
 def all_meal_plans(request: Request):
     auth_header = request.headers.get("Authorization")

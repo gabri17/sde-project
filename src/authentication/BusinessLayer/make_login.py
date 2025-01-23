@@ -1,6 +1,6 @@
 from authentication.interfaces import LoginRequest
 from authentication.DataLayer import db_users
-from authentication.BusinessLayer import jwt_manipulation, password_encryter
+from authentication.BusinessLayer import jwt_manipulation, password_encrypter
 
 def make_login(request: LoginRequest):
 
@@ -12,7 +12,7 @@ def make_login(request: LoginRequest):
 
     if(db_users.exists_username(username)): #data
         data = db_users.get_user(username) #data
-        if(password_encryter.check_password(data["password"], password)):   #businesslogic
+        if(password_encrypter.check_password(data["password"], password)):   #businesslogic
             token = jwt_manipulation.generate_jwt(username)         #businesslogic
             return {"status_code": 200, "message": "You correctly logged in!", "access_token": token}
         else:

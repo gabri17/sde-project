@@ -1,6 +1,6 @@
 from authentication.interfaces import LoginRequest
 from authentication.DataLayer import db_users
-from authentication.BusinessLayer import password_encryter
+from authentication.BusinessLayer import password_encrypter
 
 
 def make_register(request: LoginRequest):
@@ -16,6 +16,6 @@ def make_register(request: LoginRequest):
     elif(db_users.exists_username(username)): #DATA - fare api
         return {"status_code": 400, "detail": f"Username '{username}' already existing!"}
     else:
-        hashed_password = password_encryter.hash_password(password) #businesslogic
+        hashed_password = password_encrypter.hash_password(password) #businesslogic
         db_users.save_user(username, hashed_password) #DATA - fare api
         return {"status_code": 200, "message": "User saved!", "Username": username, "Password encrypted saved": hashed_password}
