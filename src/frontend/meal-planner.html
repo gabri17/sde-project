@@ -148,7 +148,7 @@
                 URL.revokeObjectURL(url);
             } catch (error) {
                 console.error("Error fetching file:", error);
-                alert("Not enough recipes could be found with the selected parameters");
+                alert("Not enough recipes could be found with the selected parameters or api limits exceeded!");
             } finally {
                 loadingElement.style.display = "none"; // Hide the loading spinner
             }

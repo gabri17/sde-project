@@ -121,7 +121,10 @@ class ProcedureRequest(BaseModel):
 
 def get_translated_procedure_from_recipe(request: ProcedureRequest):
     result = get_recipe.get_recipe_by_name(request.recipeName)                                       #1° servizio esterno
-    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"]))                           #adapter
+    if("status" in result and result["status"] == "failure"):
+        raise HTTPException(status_code=402, detail=f"Endpoint limit exceeded!")
+    
+    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"]))                        #adapter
 
     if(id_object is None):
         raise HTTPException(status_code=404, detail=f"No recipes founded with name '{request.recipeName}'!")
