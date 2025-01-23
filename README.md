@@ -13,7 +13,7 @@ Launch virtual environment
 - Linux:
     `source venv/bin/activate`
 - Windows (on CMD and not on PowerShell):
-    `cd venv/Scripts & activate.bat & cd ../..`
+    `venv\Scripts\activate.bat`
 
 Install all depencies:
 `pip install -r requirements.txt`
