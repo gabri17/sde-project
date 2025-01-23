@@ -29,9 +29,11 @@ def make_pdf(request: meal_main.RecipeRequest, token: str):
 @app.get("/meal-plan", status_code=200)
 def make_meal_plan(filters: str, response: Response, token: str = ""):
     result = meal_main.make_meal_plan(filters, token)
-    if result is FileResponse:
+    if isinstance(result, FileResponse):
+        response.status_code = status.HTTP_201_CREATED
         return result
-    response.status_code = status.HTTP_404_NOT_FOUND
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
 
 @app.get("/get-recipes", status_code=200)
 def get_recipes(filters: str):
