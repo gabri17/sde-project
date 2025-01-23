@@ -1,12 +1,15 @@
 from typing import Dict, Union
 from pydantic import BaseModel #type: ignore
+from meal_planner.interfaces import RecipesInfo
 
 API_URL = "http://127.0.0.1:8000"
 
-class RecipesInfo(BaseModel):
-    list: list
-    status_code: int
+#
+#class RecipesInfo(BaseModel):
+    #list: list
+    #status_code: int
 
+#Extracts the title and corresponding ingredients of each recipe from the JSON returned by the spoonacular API
 def extract_ingredients(recipes_info: RecipesInfo):
     
     info = recipes_info.list

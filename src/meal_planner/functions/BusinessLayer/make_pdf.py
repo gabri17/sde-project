@@ -1,5 +1,4 @@
 import requests #type: ignore
-from meal_planner.functions.DataLayer.db_upload import RecipeRequest #type: ignore
 from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer, PageBreak, Table, TableStyle #type: ignore
 from reportlab.lib.pagesizes import letter #type: ignore
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle #type: ignore
@@ -9,6 +8,7 @@ from reportlab.pdfbase import pdfmetrics #type: ignore
 from reportlab.lib.units import mm #type: ignore
 import requests #type: ignore
 import os
+from meal_planner.interfaces import RecipeRequest
 
 API_URL = "http://127.0.0.1:8000"
 

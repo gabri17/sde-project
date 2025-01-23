@@ -1,13 +1,11 @@
 import random
 from typing import Dict, Union
 from pydantic import BaseModel #type: ignore
+from meal_planner.interfaces import RecipesTitles
 
 API_URL = "http://127.0.0.1:8000"
 
-class RecipesTitles(BaseModel):
-    recipes: list[Dict[str, Union[str, int]]]
-
-# Uses a Langauge Model to decide which recipes to put in the meal plan out of all those that have the desired filter(s)
+# Given a list of recipe names and ids, take randomly some recipes out of the and returns their ids
 def select_from_recipes(input_recipes: RecipesTitles):
     recipes = input_recipes.recipes
 

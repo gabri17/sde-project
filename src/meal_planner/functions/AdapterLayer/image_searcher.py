@@ -3,9 +3,11 @@ from random import randrange
 import requests  # type: ignore
 from PIL import Image  # type: ignore
 from io import BytesIO
+from typing import List, Dict
 
 
-def search(recipe_names):
+#Given a JSON containing a list of recipe names, looks for the corresponding images on the internet
+def search(recipe_names: Dict[str, List[str]]):
     # Create a list which will hold all links
     image_links = []
 

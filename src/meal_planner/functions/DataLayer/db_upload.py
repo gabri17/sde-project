@@ -5,10 +5,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from meal_planner.functions.DataLayer.environment import URI
 
-# Struct to encapsulate all meal_plan data
-class RecipeRequest(BaseModel):
-    ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
-    image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
+from meal_planner.interfaces import RecipeRequest
 
 def insert_plan_db(username: str, recipes: RecipeRequest):
 

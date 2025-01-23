@@ -1,11 +1,16 @@
 from typing import Dict, List
 from fastapi import FastAPI, Response, Request, status #type: ignore
 from auth import main as auth_main
-from meal_planner import main as meal_main
-from meal_planner.functions.ProcessCentricLayer.meal_plan import meal_plan
 import uvicorn #type: ignore
 from fastapi.responses import FileResponse #type: ignore
 import os
+
+from meal_planner import interfaces
+
+from meal_planner.functions.AdapterLayer import image_searcher, ingredients_adapter as i_a, recipes_adapter as r_adapter
+from meal_planner.functions.DataLayer import get_recipe_info as i_getter, get_recipes as r_getter
+from meal_planner.functions.BusinessLayer import recipes_selecter as r_selecter, make_pdf as pdf_maker
+from meal_planner.functions.ProcessCentricLayer.meal_plan import meal_plan
 
 app = FastAPI()
 
@@ -45,8 +50,8 @@ def get_procedure_translated(request: auth_main.ProcedureRequest):
 #################################
 
 @app.post("/make-pdf", status_code=200)
-def make_pdf(request: meal_main.RecipeRequest):
-    return meal_main.make_pdf(request)
+def make_pdf(request: interfaces.RecipeRequest):
+    return pdf_maker.plan_to_pdf(request)
 
 @app.get("/meal-plan", status_code=200)
 def make_meal_plan(filters: str, response: Response, token: str = ""):
@@ -64,27 +69,27 @@ def make_meal_plan(filters: str, response: Response, token: str = ""):
 
 @app.get("/get-recipes", status_code=200)
 def get_recipes(filters: str):
-    return meal_main.get_recipes(filters)
+    return r_getter.get_recipes_with_filter(filters)
 
 @app.post("/recipes-adapter", status_code=200)
-def recipes_adapter(recipe_list: meal_main.Recipes):
-    return meal_main.recipes_adapter(recipe_list)
+def recipes_adapter(recipe_list: interfaces.Recipes):
+    return r_adapter.extract_text_id(recipe_list)
 
 @app.post("/recipes-selecter", status_code=200)
-def select_recipes(recipes: meal_main.RecipesTitles):
-    return meal_main.select_recipes(recipes)
+def select_recipes(recipes: interfaces.RecipesTitles):
+    return r_selecter.select_from_recipes(recipes)
 
 @app.post("/recipes-info", status_code=200)
-def recipes_info(selected_recipes: meal_main.SelectedRecipes):
-    return meal_main.recipes_info(selected_recipes)
+def recipes_info(selected_recipes: interfaces.SelectedRecipes):
+    return i_getter.get_info_from_id(selected_recipes)
 
 @app.post("/ingredients-adapter", status_code=200)
-def ingredients_adapter(recipes_info: meal_main.RecipesInfo):
-    return meal_main.ingredients_adapter(recipes_info)
+def ingredients_adapter(recipes_info: interfaces.RecipesInfo):
+    return i_a.extract_ingredients(recipes_info)
 
 @app.post("/image-searcher", status_code=200)
 def search_images(recipe_names: Dict[str, List[str]]):
-    return meal_main.search_images(recipe_names)
+    return image_searcher.search(recipe_names)
 
 ##########################
 #     USER INTERFACE     #
