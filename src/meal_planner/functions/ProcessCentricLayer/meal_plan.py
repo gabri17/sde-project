@@ -68,7 +68,7 @@ def meal_plan(filters: str, token: str = "", upload: bool = True):
 
                 # Insert the meal plan in the DB for that user
                 #//TODO Make this an API
-                result = insert_plan_db(username, RecipeRequest)
+                result = insert_plan_db(username, input_request)
                 
                 if (result["status_code"] == 404):
                     return {"status_code": 404}
