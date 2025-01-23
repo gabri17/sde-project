@@ -73,13 +73,13 @@ def make_register(request: LoginRequest):
         return {"message": "User saved!", "Username": username, "Password encrypted saved": db_adapter.get_user(username)["password"]}
 
 def get_procedure_from_recipe(recipeName: str):
-    result = get_recipe.get_recipe_by_name(recipeName)
-    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"]))
+
+    result = get_recipe.get_recipe_by_name(recipeName)                                                  #1° servizio esterno
+    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"]))                           #adapter
     if(id_object is None):
-        print("Sorry, no recipes founded!")
         raise HTTPException(status_code=404, detail=f"No recipes founded with name '{recipeName}'!")
     else:
-        info_object = get_info_from_id.get_info_from_id(id_object["id"])
-        procedure = get_procedure_text_from_info.get_procedure_text_from_info(info_object)
-        print(procedure)
+        info_object = get_info_from_id.get_info_from_id(id_object["id"])                                #2° servizio esterno
+        procedure = get_procedure_text_from_info.get_procedure_text_from_info(info_object)              #adapter
+        print(procedure)                                                                                #3° servizio esterno di traduzione
         return procedure
