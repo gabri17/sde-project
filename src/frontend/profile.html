@@ -13,6 +13,25 @@
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
     </script>
+    
+    <style>
+
+        #procedure-container {
+            max-width: 800px; /* Larghezza massima */
+            margin: 0 auto;  /* Centra il contenuto */
+            padding: 20px;   /* Spaziatura interna */
+            background-color: #f9f9f9; /* Colore di sfondo per evidenziare */
+            border-radius: 8px; /* Angoli arrotondati */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra leggera */
+        }
+
+
+        #procedure {
+            line-height: 1.8; /* Migliora la leggibilità */
+            white-space: pre-line; /* Mantiene le interruzioni di linea */
+        }
+    </style>
+    
 </head>
 <body class="bg-light">
     
@@ -59,7 +78,9 @@
 
     <div id="procedureDiv" class="mt-5 mb-5 text-center d-none">
         <h3 id="title" class="text-dark">Informazioni</h3>
-        <p id="procedure" class="text-muted">Gestisci i tuoi pasti e pianifica in modo semplice e veloce!</p>
+        <div id="procedure-container">
+            <p id="procedure" class="text-muted"></p>
+        </div>
     </div>
 
   
@@ -70,9 +91,26 @@
         async function getProcedure(){
             document.getElementById("procedureDiv").classList.add("d-none")
             const mealName = document.getElementById("mealName").value;
-            document.getElementById("title").innerHTML = mealName
-            document.getElementById("procedure").innerHTML = `Ecco qua la ricetta per: ${mealName}`;
-            document.getElementById("procedureDiv").classList.remove("d-none")
+
+            try {
+                // Effettua la chiamata all'API
+                const response = await fetch("http://127.0.0.1:8000/procedure?recipe=" + mealName, {
+                    method: "GET"
+                });
+
+                const data = await response.json();
+                if (response.status == 200) {
+                    
+                    document.getElementById("title").innerHTML = mealName
+                    document.getElementById("procedure").innerHTML = data;
+                    document.getElementById("procedureDiv").classList.remove("d-none")
+
+                } else {
+                    document.getElementById("title").innerHTML = `<p class='alert alert-danger'>Errore: ${data.detail}</p>`;
+                }
+            } catch (error) {
+                document.getElementById("title").innerHTML = `<p class='alert alert-danger'>Errore di rete: ${error}</p>`;
+            }
         }
 
         const populateTable = (meal_plans) => {

@@ -3,6 +3,7 @@ from pydantic import BaseModel #type: ignore
 from typing import List, Dict
 from .functions import jwt_manipulation, password_encryter, db_adapter
 from datetime import datetime
+from .functions.functions_to_get_procedure import get_recipe, get_id_from_recipe, get_info_from_id, get_procedure_text_from_info
 
 #TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
 
@@ -70,3 +71,15 @@ def make_register(request: LoginRequest):
         hashed_password = password_encryter.hash_password(password)
         db_adapter.save_user(username, hashed_password)
         return {"message": "User saved!", "Username": username, "Password encrypted saved": db_adapter.get_user(username)["password"]}
+
+def get_procedure_from_recipe(recipeName: str):
+    result = get_recipe.get_recipe_by_name(recipeName)
+    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"]))
+    if(id_object is None):
+        print("Sorry, no recipes founded!")
+        raise HTTPException(status_code=404, detail=f"No recipes founded with name '{recipeName}'!")
+    else:
+        info_object = get_info_from_id.get_info_from_id(id_object["id"])
+        procedure = get_procedure_text_from_info.get_procedure_text_from_info(info_object)
+        print(procedure)
+        return procedure
