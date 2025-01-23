@@ -8,3 +8,4 @@
 /src/meal_planner/functions/environment.py
 /src/auth/functions/environment.py
 __pycache__/
+/src/authentication/environment.py

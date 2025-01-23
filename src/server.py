@@ -1,21 +1,37 @@
 from typing import Dict, List
 from fastapi import FastAPI, Response, Request, status #type: ignore
-from auth import main as auth_main
+from procedure_recipe import main as auth_main
 import uvicorn #type: ignore
 from fastapi.responses import FileResponse #type: ignore
 import os
 
-from meal_planner import interfaces
+from meal_planner import interfaces as mp_interfaces
 
 from meal_planner.AdapterLayer import image_searcher, ingredients_adapter as i_a, recipes_adapter as r_adapter
 from meal_planner.DataLayer import get_recipe_info as i_getter, get_recipes as r_getter
 from meal_planner.BusinessLayer import recipes_selecter as r_selecter, make_pdf as pdf_maker
 from meal_planner.ProcessCentricLayer.meal_plan import meal_plan
 
+from authentication.BusinessLayer import make_login as m_login, make_register as m_register
+from authentication import interfaces as auth_interfaces
+
 app = FastAPI()
 
 # What follows is the list of all the endpoints used by our Web Service
 # These are only the wrappers for the actual functions. The description of each function is described in the modules of the 2 Process Centric Services
+
+
+#################################
+#             AUTH              #
+#################################
+
+@app.post("/login", status_code=200)
+def make_login(request: auth_interfaces.LoginRequest):
+    return m_login.make_login(request)
+
+@app.post("/register", status_code=200)
+def make_register(request: auth_interfaces.LoginRequest):
+    return m_register.make_register(request)
 
 #################################
 #   PROCESS CENTRIC SERVICE 1   #
@@ -24,14 +40,6 @@ app = FastAPI()
 @app.get("/meal_plans", status_code=200)
 def meal_plans(request: Request):
     return auth_main.all_meal_plans(request)
-
-@app.post("/login", status_code=200)
-def make_login(request: auth_main.LoginRequest):
-    return auth_main.make_login(request)
-
-@app.post("/register", status_code=200)
-def make_register(request: auth_main.LoginRequest):
-    return auth_main.make_register(request)
 
 @app.get("/procedure", status_code=200)
 def get_procedure(recipe: str):
@@ -50,7 +58,7 @@ def get_procedure_translated(request: auth_main.ProcedureRequest):
 #################################
 
 @app.post("/make-pdf", status_code=200)
-def make_pdf(request: interfaces.RecipeRequest):
+def make_pdf(request: mp_interfaces.RecipeRequest):
     return pdf_maker.plan_to_pdf(request)
 
 @app.get("/meal-plan", status_code=200)
@@ -72,19 +80,19 @@ def get_recipes(filters: str):
     return r_getter.get_recipes_with_filter(filters)
 
 @app.post("/recipes-adapter", status_code=200)
-def recipes_adapter(recipe_list: interfaces.Recipes):
+def recipes_adapter(recipe_list: mp_interfaces.Recipes):
     return r_adapter.extract_text_id(recipe_list)
 
 @app.post("/recipes-selecter", status_code=200)
-def select_recipes(recipes: interfaces.RecipesTitles):
+def select_recipes(recipes: mp_interfaces.RecipesTitles):
     return r_selecter.select_from_recipes(recipes)
 
 @app.post("/recipes-info", status_code=200)
-def recipes_info(selected_recipes: interfaces.SelectedRecipes):
+def recipes_info(selected_recipes: mp_interfaces.SelectedRecipes):
     return i_getter.get_info_from_id(selected_recipes)
 
 @app.post("/ingredients-adapter", status_code=200)
-def ingredients_adapter(recipes_info: interfaces.RecipesInfo):
+def ingredients_adapter(recipes_info: mp_interfaces.RecipesInfo):
     return i_a.extract_ingredients(recipes_info)
 
 @app.post("/image-searcher", status_code=200)
