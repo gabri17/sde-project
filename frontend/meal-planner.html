@@ -86,7 +86,9 @@
             </div>
 
             <button class="btn btn-primary mt-4 mb-4" onclick="processSelection()">Create</button>  
-            <button class="btn btn-danger mt-4 mb-4" onclick="location.href='/';">Torna alla home!</button>  
+            <button id="variabile" class="btn btn-danger mt-4 mb-4" onclick="location.href='/';">Torna alla home!</button>
+            <!-- <br>
+            <button class="btn btn-warning mt-4 mb-4" onclick="toProfile()">Torna al profilo!</button> -->
 
             <div id="loading" class="text-center mt-4 mb-4" style="display: none;">
                 <div class="spinner-border text-primary" role="status">
@@ -98,6 +100,36 @@
     </div>
     
     <script>
+
+        function manageVariabilita(){
+            buttonVariabile = document.getElementById("variabile")
+            var token = getCookie("access_token");
+
+            if (!token) {
+                buttonVariabile.innerHTML = "Torna alla home!"
+                buttonVariabile.onclick = function () {
+                    location.href = '/';
+                };
+            } else {
+                buttonVariabile.innerHTML = "Torna al profilo"
+                buttonVariabile.onclick = function () {
+                    location.href = '/page/profile';
+                };
+            }
+        }
+        manageVariabilita()
+
+        function toProfile(){
+            var token = getCookie("access_token");
+
+            if (!token) {
+                window.location.href='http://127.0.0.1:8000/';
+                return;
+            } else {
+                window.location.href='http://127.0.0.1:8000/page/profile';
+            }
+        }
+
         async function processSelection() {
             const loadingElement = document.getElementById("loading");
             loadingElement.style.display = "block"; // Show the loading spinner
