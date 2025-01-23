@@ -141,10 +141,10 @@ def get_translated_procedure_from_recipe(request: ProcedureRequest):
         API_KEY = "2dc8af52-e7d2-4150-9610-866a482a29ae:fx"
         params = {
             "auth_key": API_KEY,
-            "text": text,
+            "text": [text, request.recipeName],
             "target_lang": target_lang
         }
         response = requests.post(API_URL, params=params)                     #3° servizio esterno di traduzione
         response = response.json()
 
-        return {"translated_text": response["translations"][0]["text"]}
+        return {"translated_procedure": response["translations"][0]["text"], "translated_title": response["translations"][1]["text"]}

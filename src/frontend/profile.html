@@ -153,8 +153,8 @@
                 const data = await response.json();
                 if (response.status == 200) {
                     
-                    document.getElementById("title").innerHTML = mealName
-                    document.getElementById("procedure").innerHTML = data["translated_text"];
+                    document.getElementById("title").innerHTML = data["translated_title"]
+                    document.getElementById("procedure").innerHTML = data["translated_procedure"];
                     document.getElementById("procedureDiv").classList.remove("d-none")
 
                 } else {
