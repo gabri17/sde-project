@@ -92,27 +92,27 @@ def search_images(recipe_names: Dict[str, List[str]]):
 
 @app.get("/", status_code=200)
 def serve_index():
-    file_path = os.path.join(os.path.dirname(__file__), "frontend/index.html")
+    file_path = os.path.join(os.path.dirname(__file__), "../frontend/index.html")
     return FileResponse(file_path)
 
 @app.get("/page/meal-planner", status_code=200)
 def serve_meal_planner():
-    file_path = os.path.join(os.path.dirname(__file__), "frontend/meal-planner.html")
+    file_path = os.path.join(os.path.dirname(__file__), "../frontend/meal-planner.html")
     return FileResponse(file_path)
 
 @app.get("/page/login", status_code=200)
 def serve_login():
-    file_path = os.path.join(os.path.dirname(__file__), "frontend/login.html")
+    file_path = os.path.join(os.path.dirname(__file__), "../frontend/login.html")
     return FileResponse(file_path)
 
 @app.get("/page/profile", status_code=200)
 def serve_profile():
-    file_path = os.path.join(os.path.dirname(__file__), "frontend/profile.html")
+    file_path = os.path.join(os.path.dirname(__file__), "../frontend/profile.html")
     return FileResponse(file_path)
 
 @app.get("/page/register", status_code=200)
 def serve_profile():
-    file_path = os.path.join(os.path.dirname(__file__), "frontend/register.html")
+    file_path = os.path.join(os.path.dirname(__file__), "../frontend/register.html")
     return FileResponse(file_path)
 
 ##########################

@@ -1,6 +1,6 @@
 import requests #type: ignore
 
-API_KEY = "ce26c380d30d4c7eb862dd149f07a2a7"
+API_KEY = "521555a76d7d411a83bbd678d50162bd"
 API_URL = "https://api.spoonacular.com/recipes/complexSearch"
 
 # GET request to spoonacular (https://spoonacular.com/food-api/docs)
