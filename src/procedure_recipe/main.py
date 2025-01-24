@@ -53,17 +53,17 @@ class ProcedureRequest(BaseModel):
     target_lang: str
 
 def get_translated_procedure_from_recipe(request: ProcedureRequest):
-    result = get_recipe.get_recipe_by_name(request.recipeName)                                       #1° servizio esterno
+    result = get_recipe.get_recipe_by_name(request.recipeName)   #easy API                                     #1° servizio esterno
     if("status" in result and result["status"] == "failure"):
-        raise HTTPException(status_code=402, detail=f"Endpoint limit exceeded!")
+        return {"status_code":402, "detail":"Endpoint limit exceeded!"}
     
-    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"]))                        #adapter
+    id_object = get_id_from_recipe.extract_recipe_id(list(result["results"])) #easy API                       #adapter
 
     if(id_object is None):
-        raise HTTPException(status_code=404, detail=f"No recipes founded with name '{request.recipeName}'!")
+        return {"status_code":404, "detail":f"No recipes founded with name '{request.recipeName}'!"}
     else:
-        info_object = get_info_from_id.get_info_from_id(id_object["id"])                                #2° servizio esterno
-        procedure = get_procedure_text_from_info.get_procedure_text_from_info(info_object)              #adapter
+        info_object = get_info_from_id.get_info_from_id(id_object["id"])     #easy API                             #2° servizio esterno
+        procedure = get_procedure_text_from_info.get_procedure_text_from_info(info_object)     #easy API         #adapter
 
         text = procedure
         target_lang = request.target_lang
@@ -71,7 +71,7 @@ def get_translated_procedure_from_recipe(request: ProcedureRequest):
         #EN-GB, FR, IT, DE, ES, PT-PT, NL, ZH (cinese mandarino) -> linguaggi accettati
         allowed_languages = ["IT", "EN-GB", "FR", "DE", "ES", "PT-PT", "NL", "ZH"]
         if target_lang not in allowed_languages:
-            raise HTTPException(status_code=400, detail="Provide a target language in this list: " + str(allowed_languages) + "!")
+            return {"status_code" : 400, "detail" : "Provide a target language in this list: " + str(allowed_languages) + "!"}
 
         API_URL = "https://api-free.deepl.com/v2/translate"
         API_KEY = "2dc8af52-e7d2-4150-9610-866a482a29ae:fx"

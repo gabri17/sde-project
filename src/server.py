@@ -16,10 +16,20 @@ from meal_planner.DataLayer.db_upload import insert_plan_db
 from authentication.BusinessLayer import make_login as m_login, make_register as m_register
 from authentication import interfaces as auth_interfaces
 
-from procedure_recipe.AdapterLayer import meal_plans_adapter as m_p_adapt
-from procedure_recipe.DataLayer import db_meal_plans
+from procedure_recipe.AdapterLayer import meal_plans_adapter as m_p_adapt, get_id_from_recipes as g_i_f_rec
+from procedure_recipe.DataLayer import db_meal_plans, get_recipe_by_name, get_recipe_info_from_id 
+from procedure_recipe.BusinessLayer import elaborate_text as elaboration, translate_text as translation
+from procedure_recipe.ProcessCentricLayer import get_procedure_translated as g_p_t
 
-app = FastAPI()
+from procedure_recipe.interfaces import ListOfRecipes, RecipeInfo, TranslationRequest, ProcedureRequest
+
+app = FastAPI(
+    title="Documentation",
+    description="This is the API documentation for all the services implemented in our project.<br>" + 
+    "The various services are grouped in a label representing the specific process they are used in.<br><br>"+
+    "They are listed following the order in which they are compose in each process centric service, to make workflow understanding easier.",
+    version="1.0.0" 
+)
 
 # What follows is the list of all the endpoints used by our Web Service
 # These are only the wrappers for the actual functions. The description of each function is described in the modules of the 2 Process Centric Services
@@ -89,19 +99,85 @@ def adapt_meal_plans(request: Request):
     """
     return m_p_adapt.meal_plans_adapter(request)
 
-#################################
+@app.get("/get-recipe-by-name", status_code=200, tags=["Procedure retrieval"])
+def get_recipe(nameRecipe: str):
+    """
+    GET request to spoonacular (https://spoonacular.com/food-api/docs) to get some info of the recipe with the NAME passed.
+    
+    Args:\n
+        nameRecipe: the name of the recipe we want to find
 
-@app.get("/procedure", status_code=200, tags=["Procedure retrieval"])
-def get_procedure(recipe: str):
-    return auth_main.get_procedure_from_recipe(recipe)
+    Returns:\n
+        an object with the results got.\n
+        In the 'results' field a list with all the recipes associated with that name (if it's the exact name just one recipe)
+    """
+    return get_recipe_by_name.get_recipe_by_name(nameRecipe)
 
-@app.post("/translate", status_code=200, tags=["Procedure retrieval"])
-def get_translation(request: auth_main.TranslationRequest):
-    return auth_main.translate(request)
+@app.post("/id-from-recipes", status_code=200, tags=["Procedure retrieval"])
+def get_id_from_recipes(listOfRecipes: ListOfRecipes):
+    """
+    Given a list of recipes returns the id of the first recipe.
+
+    Returns:\n
+        {"id": {id of first recipe}, "status_code": 200}
+        \nor\n
+        None
+    """
+    return g_i_f_rec.extract_recipe_id(listOfRecipes)
+
+@app.get("/info-from-id", status_code=200, tags=["Procedure retrieval"])
+def get_recipe_information(id):
+    """
+    GET request to spoonacular (https://spoonacular.com/food-api/docs) to get huge details of the recipe with the ID passed.\n
+    Then we return only the relevant to us
+    
+    Args:\n
+        id: id of the recipe we want to get details of
+
+    Returns:\n
+        {
+        'title': str,
+        'readyInMinutes': int,
+        'procedure': str,
+        }
+    """
+    return get_recipe_info_from_id.get_info_from_id(id)
+
+@app.post("/get-procedure-text-from-info", status_code=200, tags=["Procedure retrieval"])
+def elaborate_text(recipe_info: RecipeInfo):
+    """
+    Elaborate the object returned by /info-from-id and get a receipt string
+
+    Returns:\n
+        string with the procedure to follow for the specific receipt
+    """
+    return elaboration.get_procedure_text_from_info(recipe_info)
+
+@app.post("/translate-text", status_code=200, tags=["Procedure retrieval"])
+def get_translation_text(translationBody: TranslationRequest):
+    """
+    Given an array of string and a target language, it translates the strings in the target language.
+    
+    Returns:\n
+        {"translated_text": List[str]} 
+    """
+    return translation.translate(translationBody)
+
 
 @app.post("/procedure_translated", status_code=200, tags=["Procedure retrieval"])
-def get_procedure_translated(request: auth_main.ProcedureRequest):
-    return auth_main.get_translated_procedure_from_recipe(request)
+def get_procedure_translated(request: ProcedureRequest):
+    """
+    It implements the whole composition: from a recipe name, we get the translated procedure!
+
+    Returns:\n
+        {"status_code": 200, "translated_procedure": {procedure translated in the desired language}, "translated_title": {title translated in the desired language}}
+
+        \nor\n
+        {"status_code": 400,"detail": "Provide a target language in this list: ['IT', 'EN-GB', 'FR', 'DE', 'ES', 'PT-PT', 'NL', 'ZH']!"}
+        \nor\n
+        {"status_code":404, "detail":"No recipes founded with name '{request.recipeName}'!"}
+    """
+    return g_p_t.get_translated_procedure_from_recipe(request)
 
 #################################
 #   PROCESS CENTRIC SERVICE 2   #

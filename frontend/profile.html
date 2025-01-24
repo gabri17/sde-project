@@ -159,7 +159,7 @@
                 });
 
                 const data = await response.json();
-                if (response.status === 200) {
+                if (data.status_code === 200) {
                     title.innerHTML = data["translated_title"];
                     procedure.innerHTML = data["translated_procedure"];
                     procedureDiv.classList.remove("d-none");
