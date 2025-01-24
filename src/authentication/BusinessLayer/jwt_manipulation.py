@@ -24,10 +24,6 @@ def verify_token(token):
             algorithms=['HS256', ]
         )
         return payload
-    #except ExpiredSignatureError as error:
-        #return 2
-    #except InvalidSignatureError as error:
-        #return 1
     except Exception as error:
         print(error)
         return  0

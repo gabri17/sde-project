@@ -29,19 +29,37 @@ app = FastAPI()
 #             AUTH              #
 #################################
 
-@app.post("/login", status_code=200)
+@app.post("/login", status_code=200, tags=["Auth"])
 def make_login(request: auth_interfaces.LoginRequest):
+    """
+        Simple API for performing login with username and password.
+
+        Returns:\n
+        {"status_code": 200, "message": "You correctly logged in!", "access_token": {token}}
+        \nor\n
+        {"status_code": 401, "detail": "Authentication failed"}
+    """
     return m_login.make_login(request)
 
-@app.post("/register", status_code=200)
+@app.post("/register", status_code=200, tags=["Auth"])
 def make_register(request: auth_interfaces.LoginRequest):
+    """
+        Simple API for performing registration providing username and password.
+
+        Returns:\n
+        {"status_code": 200, "message": "User saved!", "Username": {username}, "Password encrypted saved": {hashed_password}}
+        \nor\n
+        {"status_code": 400, "detail": "Username '{username}' already existing!"}
+        \nor\n
+        {"status_code": 400, "detail": "Password must have at least length 8!"}
+    """
     return m_register.make_register(request)
 
 #################################
 #   PROCESS CENTRIC SERVICE 1   #
 #################################
 
-@app.get("/get-meal-plans-db", status_code=200)
+@app.get("/get-meal-plans-db", status_code=200, tags=["Procedure retrieval"])
 def get_meal_plans_db(username: str):
     """It gives back a list of all meal planners created for a given user
 
@@ -53,7 +71,7 @@ def get_meal_plans_db(username: str):
     """
     return db_meal_plans.get_meal_plans_by_user(username)
 
-@app.get("/adapt-meal-plans", status_code=200)
+@app.get("/adapt-meal-plans", status_code=200, tags=["Procedure retrieval"])
 def adapt_meal_plans(request: Request):
     """It is used to retrieve 
 
@@ -73,15 +91,15 @@ def adapt_meal_plans(request: Request):
 
 #################################
 
-@app.get("/procedure", status_code=200)
+@app.get("/procedure", status_code=200, tags=["Procedure retrieval"])
 def get_procedure(recipe: str):
     return auth_main.get_procedure_from_recipe(recipe)
 
-@app.post("/translate", status_code=200)
+@app.post("/translate", status_code=200, tags=["Procedure retrieval"])
 def get_translation(request: auth_main.TranslationRequest):
     return auth_main.translate(request)
 
-@app.post("/procedure_translated", status_code=200)
+@app.post("/procedure_translated", status_code=200, tags=["Procedure retrieval"])
 def get_procedure_translated(request: auth_main.ProcedureRequest):
     return auth_main.get_translated_procedure_from_recipe(request)
 
@@ -89,7 +107,7 @@ def get_procedure_translated(request: auth_main.ProcedureRequest):
 #   PROCESS CENTRIC SERVICE 2   #
 #################################
 
-@app.post("/make-pdf", status_code=200)
+@app.post("/make-pdf", status_code=200, tags=["Meal plan creation"])
 def make_pdf(request: mp_interfaces.RecipeRequest):
     """Creates a PDF file starting from a RecipeRequest
 
@@ -103,7 +121,7 @@ def make_pdf(request: mp_interfaces.RecipeRequest):
     """
     return pdf_maker.plan_to_pdf(request)
 
-@app.get("/meal-plan", status_code=200)
+@app.get("/meal-plan", status_code=200, tags=["Meal plan creation"])
 def make_meal_plan(filters: str, response: Response, token: str = ""):
     """Creates and returns a .pdf file containing a meal plan sttarting from a series of filters
 
@@ -126,7 +144,7 @@ def make_meal_plan(filters: str, response: Response, token: str = ""):
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
 
-@app.get("/get-recipes", status_code=200)
+@app.get("/get-recipes", status_code=200, tags=["Meal plan creation"])
 def get_recipes(filters: str):
     """Asks the spoonacular API for recipes that satisfy a series of filters
 
@@ -138,7 +156,7 @@ def get_recipes(filters: str):
     """
     return r_getter.get_recipes_with_filter(filters)
 
-@app.post("/recipes-adapter", status_code=200)
+@app.post("/recipes-adapter", status_code=200, tags=["Meal plan creation"])
 def recipes_adapter(recipe_list: mp_interfaces.Recipes):
     """An adapter to extract recipe title and id
 
@@ -163,7 +181,7 @@ def recipes_adapter(recipe_list: mp_interfaces.Recipes):
     """
     return r_adapter.extract_text_id(recipe_list)
 
-@app.post("/recipes-selecter", status_code=200)
+@app.post("/recipes-selecter", status_code=200, tags=["Meal plan creation"])
 def select_recipes(recipes: mp_interfaces.RecipesTitles):
     """Given a series of recipe names and ids, selects 2 of them
 
@@ -181,7 +199,7 @@ def select_recipes(recipes: mp_interfaces.RecipesTitles):
     """
     return r_selecter.select_from_recipes(recipes)
 
-@app.post("/recipes-info", status_code=200)
+@app.post("/recipes-info", status_code=200, tags=["Meal plan creation"])
 def recipes_info(selected_recipes: mp_interfaces.SelectedRecipes):
     """Asks the spoonacular API for additional info about some recipes
 
@@ -197,7 +215,7 @@ def recipes_info(selected_recipes: mp_interfaces.SelectedRecipes):
     """
     return i_getter.get_info_from_id(selected_recipes)
 
-@app.post("/ingredients-adapter", status_code=200)
+@app.post("/ingredients-adapter", status_code=200, tags=["Meal plan creation"])
 def ingredients_adapter(recipes_info: mp_interfaces.RecipesInfo):
     """Extract the ingredients of a recipe from the additional info JSON returned by the spoonacular API
 
@@ -220,7 +238,7 @@ def ingredients_adapter(recipes_info: mp_interfaces.RecipesInfo):
     """
     return i_a.extract_ingredients(recipes_info)
 
-@app.post("/image-searcher", status_code=200)
+@app.post("/image-searcher", status_code=200, tags=["Meal plan creation"])
 def search_images(recipe_names: Dict[str, List[str]]):
     """Looks for images given some recipes
 
@@ -237,7 +255,7 @@ def search_images(recipe_names: Dict[str, List[str]]):
     """
     return image_searcher.search(recipe_names)
 
-@app.post("/upload_recipe", status_code=200)
+@app.post("/upload_recipe", status_code=200, tags=["Meal plan creation"])
 def upload_recipe(recipe: mp_interfaces.RecipeRequest, token: str):
     """Uploads the meal plan of an authenticated user to the DB
 
