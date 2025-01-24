@@ -29,18 +29,6 @@ app = FastAPI()
 #             AUTH              #
 #################################
 
-@app.post("/login", status_code=200, tags=["Auth"])
-def make_login(request: auth_interfaces.LoginRequest):
-    """
-        Simple API for performing login with username and password.
-
-        Returns:\n
-        {"status_code": 200, "message": "You correctly logged in!", "access_token": {token}}
-        \nor\n
-        {"status_code": 401, "detail": "Authentication failed"}
-    """
-    return m_login.make_login(request)
-
 @app.post("/register", status_code=200, tags=["Auth"])
 def make_register(request: auth_interfaces.LoginRequest):
     """
@@ -54,6 +42,18 @@ def make_register(request: auth_interfaces.LoginRequest):
         {"status_code": 400, "detail": "Password must have at least length 8!"}
     """
     return m_register.make_register(request)
+
+@app.post("/login", status_code=200, tags=["Auth"])
+def make_login(request: auth_interfaces.LoginRequest):
+    """
+        Simple API for performing login with username and password.
+
+        Returns:\n
+        {"status_code": 200, "message": "You correctly logged in!", "access_token": {token}}
+        \nor\n
+        {"status_code": 401, "detail": "Authentication failed"}
+    """
+    return m_login.make_login(request)
 
 #################################
 #   PROCESS CENTRIC SERVICE 1   #
@@ -107,20 +107,6 @@ def get_procedure_translated(request: auth_main.ProcedureRequest):
 #   PROCESS CENTRIC SERVICE 2   #
 #################################
 
-@app.post("/make-pdf", status_code=200, tags=["Meal plan creation"])
-def make_pdf(request: mp_interfaces.RecipeRequest):
-    """Creates a PDF file starting from a RecipeRequest
-
-    Args:\n
-        class RecipeRequest(BaseModel):
-            ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
-            image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
-
-    Returns:\n
-        {"status_code": val}   # val = 200 if successfully created, otherwise 404
-    """
-    return pdf_maker.plan_to_pdf(request)
-
 @app.get("/meal-plan", status_code=200, tags=["Meal plan creation"])
 def make_meal_plan(filters: str, response: Response, token: str = ""):
     """Creates and returns a .pdf file containing a meal plan sttarting from a series of filters
@@ -157,7 +143,7 @@ def get_recipes(filters: str):
     return r_getter.get_recipes_with_filter(filters)
 
 @app.post("/recipes-adapter", status_code=200, tags=["Meal plan creation"])
-def recipes_adapter(recipe_list: mp_interfaces.Recipes):
+def recipes_adapter(recipe_list: mp_interfaces.Recipes, response: Response):
     """An adapter to extract recipe title and id
 
     Args:\n
@@ -176,10 +162,13 @@ def recipes_adapter(recipe_list: mp_interfaces.Recipes):
                 "id": recipe_id,
             },
             ...],
-            "status_code": val
+            "status_code": int
         }
     """
-    return r_adapter.extract_text_id(recipe_list)
+    result = r_adapter.extract_text_id(recipe_list)
+    if result["status_code"] == 404:
+        response.status_code = status.HTTP_404_NOT_FOUND
+    return result
 
 @app.post("/recipes-selecter", status_code=200, tags=["Meal plan creation"])
 def select_recipes(recipes: mp_interfaces.RecipesTitles):
@@ -194,7 +183,7 @@ def select_recipes(recipes: mp_interfaces.RecipesTitles):
     Returns:\n
         {
             "recipes": [id1, id2, ...],
-            "status_code": val
+            "status_code": int
         }
     """
     return r_selecter.select_from_recipes(recipes)
@@ -216,7 +205,7 @@ def recipes_info(selected_recipes: mp_interfaces.SelectedRecipes):
     return i_getter.get_info_from_id(selected_recipes)
 
 @app.post("/ingredients-adapter", status_code=200, tags=["Meal plan creation"])
-def ingredients_adapter(recipes_info: mp_interfaces.RecipesInfo):
+def ingredients_adapter(recipes_info: mp_interfaces.RecipesInfo, response: Response):
     """Extract the ingredients of a recipe from the additional info JSON returned by the spoonacular API
 
     Args:\n
@@ -255,6 +244,20 @@ def search_images(recipe_names: Dict[str, List[str]]):
     """
     return image_searcher.search(recipe_names)
 
+@app.post("/make-pdf", status_code=200, tags=["Meal plan creation"])
+def make_pdf(request: mp_interfaces.RecipeRequest):
+    """Creates a PDF file starting from a RecipeRequest
+
+    Args:\n
+        class RecipeRequest(BaseModel):
+            ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
+            image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
+
+    Returns:\n
+        {"status_code": val}   # val = 200 if successfully created, otherwise 404
+    """
+    return pdf_maker.plan_to_pdf(request)
+
 @app.post("/upload_recipe", status_code=200, tags=["Meal plan creation"])
 def upload_recipe(recipe: mp_interfaces.RecipeRequest, token: str):
     """Uploads the meal plan of an authenticated user to the DB
@@ -283,6 +286,11 @@ def serve_meal_planner():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/meal-planner.html")
     return FileResponse(file_path)
 
+@app.get("/page/register", status_code=200, include_in_schema=False)
+def serve_profile():
+    file_path = os.path.join(os.path.dirname(__file__), "../frontend/register.html")
+    return FileResponse(file_path)
+
 @app.get("/page/login", status_code=200, include_in_schema=False)
 def serve_login():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/login.html")
@@ -291,11 +299,6 @@ def serve_login():
 @app.get("/page/profile", status_code=200, include_in_schema=False)
 def serve_profile():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/profile.html")
-    return FileResponse(file_path)
-
-@app.get("/page/register", status_code=200, include_in_schema=False)
-def serve_profile():
-    file_path = os.path.join(os.path.dirname(__file__), "../frontend/register.html")
     return FileResponse(file_path)
 
 ##########################
