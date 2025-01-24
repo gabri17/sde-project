@@ -224,27 +224,27 @@ def upload_recipe(recipe: mp_interfaces.RecipeRequest, token: str):
 #     USER INTERFACE     #
 ##########################
 
-@app.get("/", status_code=200)
+@app.get("/", status_code=200, include_in_schema=False)
 def serve_index():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/index.html")
     return FileResponse(file_path)
 
-@app.get("/page/meal-planner", status_code=200)
+@app.get("/page/meal-planner", status_code=200, include_in_schema=False)
 def serve_meal_planner():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/meal-planner.html")
     return FileResponse(file_path)
 
-@app.get("/page/login", status_code=200)
+@app.get("/page/login", status_code=200, include_in_schema=False)
 def serve_login():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/login.html")
     return FileResponse(file_path)
 
-@app.get("/page/profile", status_code=200)
+@app.get("/page/profile", status_code=200, include_in_schema=False)
 def serve_profile():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/profile.html")
     return FileResponse(file_path)
 
-@app.get("/page/register", status_code=200)
+@app.get("/page/register", status_code=200, include_in_schema=False)
 def serve_profile():
     file_path = os.path.join(os.path.dirname(__file__), "../frontend/register.html")
     return FileResponse(file_path)
