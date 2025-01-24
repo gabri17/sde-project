@@ -111,7 +111,13 @@
         
 
         </form>
-        <button type="submit" class="btn btn-primary mt-3" onclick="getProcedure()">Invia</button>
+        <div id="loadingDiv" class="text-center mt-3 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Caricamento in corso, attendere...</p>
+        </div>
+        <button type="button" class="btn btn-primary mt-3" onclick="getProcedure()">Invia</button>
     </div>
 
     <div id="procedureDiv" class="mt-5 mb-5 text-center d-none">
@@ -126,43 +132,48 @@
 
     <script>
 
-        async function getProcedure(){
-            document.getElementById("procedureDiv").classList.add("d-none")
-            document.getElementById("title").innerHTML = ""
-                    document.getElementById("procedure").innerHTML = "";
+        async function getProcedure() {
+            const loadingDiv = document.getElementById("loadingDiv");
+            const procedureDiv = document.getElementById("procedureDiv");
+            const title = document.getElementById("title");
+            const procedure = document.getElementById("procedure");
+
+            // Reset procedure display and show loading spinner
+            procedureDiv.classList.add("d-none");
+            title.innerHTML = "";
+            procedure.innerHTML = "";
+            loadingDiv.classList.remove("d-none");
+
             const mealName = document.getElementById("mealName").value;
             const language = document.querySelector('input[name="language"]:checked').value;
 
-
             try {
-                // Effettua la chiamata all'API
-                /* const response = await fetch("http://127.0.0.1:8000/procedure?recipe=" + mealName, {
-                    method: "GET"
-                }); */
                 const response = await fetch("http://127.0.0.1:8000/procedure_translated", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
                     },
-                    body : JSON.stringify({
-                        'recipeName': mealName,
-                        'target_lang': language
-                    })
+                    body: JSON.stringify({
+                        recipeName: mealName,
+                        target_lang: language,
+                    }),
                 });
 
                 const data = await response.json();
-                if (response.status == 200) {
-                    
-                    document.getElementById("title").innerHTML = data["translated_title"]
-                    document.getElementById("procedure").innerHTML = data["translated_procedure"];
-                    document.getElementById("procedureDiv").classList.remove("d-none")
-
+                if (response.status === 200) {
+                    title.innerHTML = data["translated_title"];
+                    procedure.innerHTML = data["translated_procedure"];
+                    procedureDiv.classList.remove("d-none");
                 } else {
-                    document.getElementById("title").innerHTML = `Errore: ${data.detail}`;
-                    document.getElementById("procedureDiv").classList.remove("d-none")
+                    title.innerHTML = `Errore: ${data.detail}`;
+                    procedureDiv.classList.remove("d-none");
                 }
             } catch (error) {
-                document.getElementById("title").innerHTML = `<p class='alert alert-danger'>Errore di rete: ${error}</p>`;
+                title.innerHTML = `<p class='alert alert-danger'>Errore di rete: ${error}</p>`;
+                procedureDiv.classList.remove("d-none");
+            } finally {
+                // Hide the spinner after the process is complete
+                loadingDiv.classList.add("d-none");
             }
         }
 
