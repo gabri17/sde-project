@@ -31,6 +31,8 @@ This Meal Planner web service is capable of creating daily meal plans given any 
 
 5. Go at http://127.0.0.1:8000/
 
+APIs documentation available at: http://127.0.0.1:8000/docs
+
 ## Developer Notes
 
 In order to generate/update the *requirements.txt* file when new dependencies are added use:
