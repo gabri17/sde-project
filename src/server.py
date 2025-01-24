@@ -11,6 +11,7 @@ from meal_planner.AdapterLayer import image_searcher, ingredients_adapter as i_a
 from meal_planner.DataLayer import get_recipe_info as i_getter, get_recipes as r_getter
 from meal_planner.BusinessLayer import recipes_selecter as r_selecter, make_pdf as pdf_maker
 from meal_planner.ProcessCentricLayer.meal_plan import meal_plan
+from meal_planner.DataLayer.db_upload import insert_plan_db
 
 from authentication.BusinessLayer import make_login as m_login, make_register as m_register
 from authentication import interfaces as auth_interfaces
@@ -204,6 +205,20 @@ def search_images(recipe_names: Dict[str, List[str]]):
         }
     """
     return image_searcher.search(recipe_names)
+
+@app.post("/upload_recipe", status_code=200)
+def upload_recipe(recipe: mp_interfaces.RecipeRequest, token: str):
+    """Uploads the meal plan of an authenticated user to the DB
+
+    Args:\n
+        class RecipeRequest(BaseModel):
+            ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
+            image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
+
+    Returns:\n
+        {"status_code": int}    # 200 if ok, otherwise 404
+    """
+    return insert_plan_db(token, recipe)
 
 ##########################
 #     USER INTERFACE     #

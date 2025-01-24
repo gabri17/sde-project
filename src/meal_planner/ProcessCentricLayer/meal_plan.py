@@ -51,18 +51,9 @@ def meal_plan(filters: str, token: str = "", upload: bool = True):
         # If user is authenticated, add meal_plan to his history
         # Check if authenticated
         if token != "":
-            # A token has been inserted, validate it
-            result = jwt_manipulation.verify_token(token)
-
-            if result != 1 and result != 2 and result != 0:
-                # Token is valid, extract username
-                username = result["username"]
-
-                # Insert the meal plan in the DB for that user
-                #//TODO Make this an API
-                result = insert_plan_db(username, input_request)
+            recipe_upload_result = requests.post(API_URL+"/upload_recipe", json=input_request, params={"token": token}).json()
                 
-                if (result["status_code"] == 404):
-                    return {"status_code": 404}
+            if (recipe_upload_result["status_code"] == 404):
+                return {"status_code": 404}
                 
     return {"status_code": 201}

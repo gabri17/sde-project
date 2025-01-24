@@ -1,13 +1,24 @@
 import datetime
 from typing import Dict, List
-from pydantic import BaseModel
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+from authentication.BusinessLayer import jwt_manipulation
+from pydantic import BaseModel #type: ignore
+from pymongo.mongo_client import MongoClient #type: ignore
+from pymongo.server_api import ServerApi #type: ignore
 from environment import URI
 
 from meal_planner.interfaces import RecipeRequest
 
-def insert_plan_db(username: str, recipes: RecipeRequest):
+def insert_plan_db(token: str, recipes: RecipeRequest):
+
+    # A token has been inserted, validate it
+    result = jwt_manipulation.verify_token(token)
+    username = ""
+
+    if result != 1 and result != 2 and result != 0:
+        # Token is valid, extract username
+        username = result["username"]
+    else:
+        return {"status_code": 404}
 
     client = MongoClient(URI, server_api=ServerApi('1'))
 
@@ -27,15 +38,12 @@ def insert_plan_db(username: str, recipes: RecipeRequest):
         print("No user found")
         return {"status_code": 404}
     
-    print("Found user:")
-    print(result)
-
     # Access the meal_plans collection
     plans_collection = db['MealPlans']
 
     # Extract data from RecipeRequest
-    ingredients = recipes["ingredients"]
-    image_links = recipes["image_links"]
+    ingredients = recipes.ingredients
+    image_links = recipes.image_links
 
     # Get current datetime and use it to differentiate meal_plans for the same user
     current_datetime = datetime.datetime.now()
@@ -54,11 +62,3 @@ def insert_plan_db(username: str, recipes: RecipeRequest):
     print("Meal PLan added to DB!")
 
     return {"status_code": 200}
-
-#! TESTING
-#ingredients = {"pizza": ["farina", "mozzarella", "pomodoro"]}
-#images = ["https://cdn.shopify.com/s/files/1/0274/9503/9079/files/20220211142754-margherita-9920_5a73220e-4a1a-4d33-b38f-26e98e3cd986.jpg?v=1723650067"]
-
-#recipe = RecipeRequest(ingredients=ingredients, image_links=images)
-
-#insert_plan_db("admin", recipe)
