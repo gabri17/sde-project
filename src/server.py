@@ -59,10 +59,29 @@ def get_procedure_translated(request: auth_main.ProcedureRequest):
 
 @app.post("/make-pdf", status_code=200)
 def make_pdf(request: mp_interfaces.RecipeRequest):
+    """Creates a PDF file starting from a RecipeRequest
+
+    Args:\n
+        class RecipeRequest(BaseModel):
+            ingredients: Dict[str, List[str]]  # Example: {"Recipe1": ["Item1", "Item2"]}
+            image_links: List[str]             # Example: ["http://link1.com", "http://link2.com"]
+
+    Returns:\n
+        {"status_code": val}   # val = 200 if successfully created, otherwise 404
+    """
     return pdf_maker.plan_to_pdf(request)
 
 @app.get("/meal-plan", status_code=200)
 def make_meal_plan(filters: str, response: Response, token: str = ""):
+    """Creates and returns a .pdf file containing a meal plan sttarting from a series of filters
+
+    Args:\n
+        filters: str # Example: "vegan, gluten-free"
+        token: str   # The authentication token of the logged in user
+
+    Returns:\n
+        FileResponse containing the .pdf file
+    """
     result = meal_plan(filters, token)
     if result["status_code"] == 201:
         response.status_code = status.HTTP_201_CREATED
@@ -77,26 +96,113 @@ def make_meal_plan(filters: str, response: Response, token: str = ""):
 
 @app.get("/get-recipes", status_code=200)
 def get_recipes(filters: str):
+    """Asks the spoonacular API for recipes that satisfy a series of filters
+
+    Args:\n
+        filters: str # Example: "vegan, gluten-free"
+
+    Returns:\n
+        The JSON returned by the spoonacular API
+    """
     return r_getter.get_recipes_with_filter(filters)
 
 @app.post("/recipes-adapter", status_code=200)
 def recipes_adapter(recipe_list: mp_interfaces.Recipes):
+    """An adapter to extract recipe title and id
+
+    Args:\n
+        The JSON returned by the spoonacular API, which is seen as:
+
+        class Recipes(BaseModel):
+            offset: int
+            number: int
+            results: list[Dict[str, Union[str, int]]]
+            totalResults: int
+
+    Returns:\n
+        {
+            "recipes": [{
+                "name": recipe_name,
+                "id": recipe_id,
+            },
+            ...],
+            "status_code": val
+        }
+    """
     return r_adapter.extract_text_id(recipe_list)
 
 @app.post("/recipes-selecter", status_code=200)
 def select_recipes(recipes: mp_interfaces.RecipesTitles):
+    """Given a series of recipe names and ids, selects 2 of them
+
+    Args:\n
+        The JSON returned by the /recipes-adapter endpoint, which is seen as:
+
+        class RecipesTitles(BaseModel):
+            recipes: list[Dict[str, Union[str, int]]]
+
+    Returns:\n
+        {
+            "recipes": [id1, id2, ...],
+            "status_code": val
+        }
+    """
     return r_selecter.select_from_recipes(recipes)
 
 @app.post("/recipes-info", status_code=200)
 def recipes_info(selected_recipes: mp_interfaces.SelectedRecipes):
+    """Asks the spoonacular API for additional info about some recipes
+
+    Args:\n
+        The JSON returned by the /recipes-selecter endpoint, which is seen as:
+
+        class SelectedRecipes(BaseModel):
+            recipes: list[int]
+            status_code: int
+
+    Returns:\n
+        The JSON returned by the spoonacular API
+    """
     return i_getter.get_info_from_id(selected_recipes)
 
 @app.post("/ingredients-adapter", status_code=200)
 def ingredients_adapter(recipes_info: mp_interfaces.RecipesInfo):
+    """Extract the ingredients of a recipe from the additional info JSON returned by the spoonacular API
+
+    Args:\n
+        The JSON returned by the spoonacular API, which is seen as:
+
+        class RecipesInfo(BaseModel):
+            list: list
+            status_code: int
+
+    Returns:\n
+        {
+            "list": [
+                {"recipe_name": [ingredient1, ingredient2, ...]}.
+                {"recipe2": ...},
+                ...
+            ],
+            "status_code": int
+        }
+    """
     return i_a.extract_ingredients(recipes_info)
 
 @app.post("/image-searcher", status_code=200)
 def search_images(recipe_names: Dict[str, List[str]]):
+    """Looks for images given some recipes
+
+    Args:\n
+        The JSON returned by the /ingredients-adapter endpoint, which is seen as:
+
+        recipe_names: Dict[str, List[str]]
+
+    Returns:\n
+        {
+            "links": [link1, link2, ...], 
+            "status_code": int
+        }
+    """
     return image_searcher.search(recipe_names)
 
 ##########################
