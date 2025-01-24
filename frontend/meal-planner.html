@@ -40,7 +40,7 @@
     
     <div class="container mt-5">
         <div class="text-center">
-            <h2 class="display-4 text-primary">Inserisci i filtri di tuo interesse!</h2>
+            <h2 class="display-4 text-primary">Select your dietary constraints:</h2>
                 
             <div class="mt-4">
                 <div class="diet-checkbox">
@@ -86,7 +86,7 @@
             </div>
 
             <button class="btn btn-primary mt-4 mb-4" onclick="processSelection()">Create</button>  
-            <button id="variabile" class="btn btn-danger mt-4 mb-4" onclick="location.href='/';">Torna alla home!</button>
+            <button id="variabile" class="btn btn-danger mt-4 mb-4" onclick="location.href='/';">Homepage</button>
             <!-- <br>
             <button class="btn btn-warning mt-4 mb-4" onclick="toProfile()">Torna al profilo!</button> -->
 
@@ -106,12 +106,12 @@
             var token = getCookie("access_token");
 
             if (!token) {
-                buttonVariabile.innerHTML = "Torna alla home!"
+                buttonVariabile.innerHTML = "Back to homepage"
                 buttonVariabile.onclick = function () {
                     location.href = '/';
                 };
             } else {
-                buttonVariabile.innerHTML = "Torna al profilo"
+                buttonVariabile.innerHTML = "Back to your profile"
                 buttonVariabile.onclick = function () {
                     location.href = '/page/profile';
                 };

@@ -37,12 +37,11 @@
     
     <div class="container mt-5">
         <div class="text-center">
-            <h1 class="display-4 text-primary">Ciao!</h1>
-            <p class="lead text-secondary">Visualizza i tuoi vecchi meal planners!</p>
+            <h1 class="display-4 text-primary">Hello!</h1>
+            <p class="lead text-secondary">Access your old Meal Plans</p>
             <div class="mt-4">
-                <button class="btn btn-primary btn-lg me-3" onclick="loadData()">Visualizza!</button>
-                <!-- <button class="btn btn-success btn-lg" onclick="location.href='page/meal-planner';">Crea il mio Meal Planner!</button> -->
-                <button class="btn btn-success btn-lg" onclick="location.href='meal-planner';">Crea il mio Meal Planner!</button>
+                <button class="btn btn-primary btn-lg me-3" onclick="loadData()">History</button>
+                <button class="btn btn-success btn-lg" onclick="location.href='meal-planner';">Create your Meal Plan</button>
                 <br>
                 <button class="btn btn-warning btn-lg mt-3" onclick="logout()">Logout!</button>
             </div>
@@ -70,42 +69,42 @@
 
     <div class="mt-5 mb-5 text-center">
         <form id="formProcedure" class="text-center">
-            <label for="mealName" class="form-label text-secondary">Inserisci il nome del piatto per cui desideri la ricetta:</label>
+            <label for="mealName" class="form-label text-secondary">Insert recipe name for which you want the procedure:</label>
             <input type="text" id="mealName" class="form-control w-50 mx-auto">
 
             <div class="mt-3">
-                <p class="text-secondary">Seleziona la lingua della traduzione:</p>
+                <p class="text-secondary">Select procedure langauge:</p>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="IT" value="IT" checked>
                     <label class="form-check-label" for="IT">Italiano</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="EN-GB" value="EN-GB">
-                    <label class="form-check-label" for="EN-GB">Inglese</label>
+                    <label class="form-check-label" for="EN-GB">English</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="FR" value="FR">
-                    <label class="form-check-label" for="FR">Francese</label>
+                    <label class="form-check-label" for="FR">Français</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="DE" value="DE">
-                    <label class="form-check-label" for="DE">Tedesco</label>
+                    <label class="form-check-label" for="DE">Duits</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="ES" value="ES">
-                    <label class="form-check-label" for="ES">Spagnolo</label>
+                    <label class="form-check-label" for="ES">Español</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="PT-PT" value="PT-PT">
-                    <label class="form-check-label" for="PT-PT">Portoghese</label>
+                    <label class="form-check-label" for="PT-PT">Português</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="NL" value="NL">
-                    <label class="form-check-label" for="NL">Olandese</label>
+                    <label class="form-check-label" for="NL">Nederlands</label>
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="language" id="ZH" value="ZH">
-                    <label class="form-check-label" for="ZH">Cinese mandarino</label>
+                    <label class="form-check-label" for="ZH">普通话</label>
                 </div>
             </div>
         
@@ -115,13 +114,13 @@
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p>Caricamento in corso, attendere...</p>
+            <p>Loading, please wait...</p>
         </div>
-        <button type="button" class="btn btn-primary mt-3" onclick="getProcedure()">Invia</button>
+        <button type="button" class="btn btn-primary mt-3" onclick="getProcedure()">Request procedure</button>
     </div>
 
     <div id="procedureDiv" class="mt-5 mb-5 text-center d-none">
-        <h3 id="title" class="text-dark">Informazioni</h3>
+        <h3 id="title" class="text-dark">Information</h3>
         <div id="procedure-container">
             <p id="procedure" class="text-muted"></p>
         </div>
