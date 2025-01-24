@@ -1,6 +1,5 @@
 from typing import Dict, List
 from fastapi import FastAPI, Response, Request, status #type: ignore
-from procedure_recipe import main as auth_main
 import uvicorn #type: ignore
 from fastapi.responses import FileResponse #type: ignore
 import os
