@@ -16,6 +16,9 @@ from meal_planner.DataLayer.db_upload import insert_plan_db
 from authentication.BusinessLayer import make_login as m_login, make_register as m_register
 from authentication import interfaces as auth_interfaces
 
+from procedure_recipe.AdapterLayer import meal_plans_adapter as m_p_adapt
+from procedure_recipe.DataLayer import db_meal_plans
+
 app = FastAPI()
 
 # What follows is the list of all the endpoints used by our Web Service
@@ -38,9 +41,37 @@ def make_register(request: auth_interfaces.LoginRequest):
 #   PROCESS CENTRIC SERVICE 1   #
 #################################
 
-@app.get("/meal_plans", status_code=200)
-def meal_plans(request: Request):
-    return auth_main.all_meal_plans(request)
+@app.get("/get-meal-plans-db", status_code=200)
+def get_meal_plans_db(username: str):
+    """It gives back a list of all meal planners created for a given user
+
+    Args:\n
+        username: str # The username of the user we want to get meal plans
+
+    Returns:\n
+        {"plans_response": list}   #list of meal plans objects generated
+    """
+    return db_meal_plans.get_meal_plans_by_user(username)
+
+@app.get("/adapt-meal-plans", status_code=200)
+def adapt_meal_plans(request: Request):
+    """It is used to retrieve 
+
+    Header:\n
+        Authorization: 'Bearer {token}' # Requested the access_token to retrieve this information
+
+    Returns:\n
+        {
+        "meal_plans_number": int, #number of meal planners
+        "data": [{
+            date_meal_plan: str,
+            recipes_number: int,
+            recipes_titles: list[str]
+        }]}   #list of meal plans objects with information of the date, number of recipes and all recipes generated
+    """
+    return m_p_adapt.meal_plans_adapter(request)
+
+#################################
 
 @app.get("/procedure", status_code=200)
 def get_procedure(recipe: str):

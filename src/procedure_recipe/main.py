@@ -1,32 +1,9 @@
-from fastapi import FastAPI, HTTPException, Request #type: ignore
+from fastapi import HTTPException #type: ignore
 from pydantic import BaseModel #type: ignore
 from typing import List, Dict
-from authentication import db_adapter
-from datetime import datetime
 from procedure_recipe import get_recipe, get_id_from_recipe, get_info_from_id, get_procedure_text_from_info
 import requests
 #TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
-
-from authentication.BusinessLayer import jwt_manipulation
-
-def all_meal_plans(request: Request):
-    auth_header = request.headers.get("Authorization")
-    
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Unauthorized: token missing")
-
-    token = auth_header.split(" ")[1]
-    output = jwt_manipulation.verify_token(token)
-    if(output == 0):
-        raise HTTPException(status_code=401, detail="Unauthorized: token not verified or internal server error")
-    else:
-        res = db_adapter.get_meal_plans_by_user(output["username"]) #usare un adapter anche per questo
-        
-        if(res is None):
-            return {"data": []}
-        else:
-            list_parsed = db_adapter.manipulate(res)
-            return {"meal_plans_number": len(list_parsed), "data": sorted(list_parsed, key=lambda x: datetime.strptime(x['date_meal_plan'], '%Y-%m-%d %H:%M:%S'), reverse=True)}
 
 class TranslationRequest(BaseModel):
     text: str
