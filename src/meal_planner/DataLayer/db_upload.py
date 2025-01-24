@@ -14,7 +14,7 @@ def insert_plan_db(token: str, recipes: RecipeRequest):
     result = jwt_manipulation.verify_token(token)
     username = ""
 
-    if result != 1 and result != 2 and result != 0:
+    if result != 0:
         # Token is valid, extract username
         username = result["username"]
     else:

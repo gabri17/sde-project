@@ -17,12 +17,8 @@ def all_meal_plans(request: Request):
 
     token = auth_header.split(" ")[1]
     output = jwt_manipulation.verify_token(token)
-    if(output == 1):
-       raise HTTPException(status_code=401, detail="Unauthorized: invalid signature")
-    elif(output == 2):
-        raise HTTPException(status_code=401, detail="Unauthorized: token expired")
-    elif(output == 0):
-        raise HTTPException(status_code=500, detail="Internal server error")
+    if(output == 0):
+        raise HTTPException(status_code=401, detail="Unauthorized: token not verified or internal server error")
     else:
         res = db_adapter.get_meal_plans_by_user(output["username"]) #usare un adapter anche per questo
         

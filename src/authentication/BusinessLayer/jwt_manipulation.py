@@ -1,5 +1,4 @@
 import jwt
-from jwt.exceptions import InvalidSignatureError, ExpiredSignatureError
 import datetime
 
 SECRET_KEY = 'super_segreto_shhhh'
@@ -25,10 +24,10 @@ def verify_token(token):
             algorithms=['HS256', ]
         )
         return payload
-    except ExpiredSignatureError as error:
-        return 2
-    except InvalidSignatureError as error:
-        return 1
+    #except ExpiredSignatureError as error:
+        #return 2
+    #except InvalidSignatureError as error:
+        #return 1
     except Exception as error:
         print(error)
         return  0
