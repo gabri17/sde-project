@@ -58,20 +58,6 @@ def get_user_by_db(username: str):
     """
     return db_users.get_user(username)
 
-@app.post("/register", status_code=200, tags=["Auth"])
-def make_register(request: auth_interfaces.LoginRequest):
-    """
-        Simple API for performing registration providing username and password.
-
-        Returns:\n
-        {"status_code": 200, "message": "User saved!", "Username": {username}, "Password encrypted saved": {hashed_password}}
-        \nor\n
-        {"status_code": 400, "detail": "Username '{username}' already existing!"}
-        \nor\n
-        {"status_code": 400, "detail": "Password must have at least length 8!"}
-    """
-    return m_register.make_register(request)
-
 @app.post("/save-user", status_code=200, tags=["Auth"])
 def save_user_in_db(request: auth_interfaces.LoginRequest):
     """
@@ -87,6 +73,20 @@ def save_user_in_db(request: auth_interfaces.LoginRequest):
         null
     """
     return db_users.save_user(request.username, request.password)
+
+@app.post("/register", status_code=200, tags=["Auth"])
+def make_register(request: auth_interfaces.LoginRequest):
+    """
+        Simple API for performing registration providing username and password.
+
+        Returns:\n
+        {"status_code": 200, "message": "User saved!", "Username": {username}, "Password encrypted saved": {hashed_password}}
+        \nor\n
+        {"status_code": 400, "detail": "Username '{username}' already existing!"}
+        \nor\n
+        {"status_code": 400, "detail": "Password must have at least length 8!"}
+    """
+    return m_register.make_register(request)
 
 @app.post("/login", status_code=200, tags=["Auth"])
 def make_login(request: auth_interfaces.LoginRequest):
