@@ -8,4 +8,4 @@ def hash_password(password: str) -> str:
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed.decode('utf-8')
 
-#TODO: devo chiamare db_adapter.get_user(username) stile API?
+#not services, just auxiliary functions used to generate jwt in login service and verify it when needed

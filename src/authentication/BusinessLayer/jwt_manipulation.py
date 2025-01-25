@@ -3,6 +3,8 @@ import datetime
 
 SECRET_KEY = 'super_segreto_shhhh'
 
+#not services, just auxiliary functions used to generate jwt in login service and verify it when needed
+
 def generate_jwt(username):
     payload = {
         "username": username,

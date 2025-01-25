@@ -1,15 +1,6 @@
 from environment import URI
 from pymongo.mongo_client import MongoClient
 
-def exists_username(username: str) -> bool:
-    
-    client = MongoClient(URI)
-    db = client['ProgettoSDE']
-    users_collection = db['Users']
-
-    query = {"username": username}
-    return users_collection.find_one(query) is not None 
-
 def get_user(username: str):
 
     client = MongoClient(URI)
