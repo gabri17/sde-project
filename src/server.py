@@ -17,10 +17,10 @@ from authentication import interfaces as auth_interfaces
 
 from procedure_recipe.AdapterLayer import meal_plans_adapter as m_p_adapt, get_id_from_recipes as g_i_f_rec
 from procedure_recipe.DataLayer import db_meal_plans, get_recipe_by_name, get_recipe_info_from_id 
-from procedure_recipe.BusinessLayer import elaborate_text as elaboration, translate_text as translation
+from procedure_recipe.BusinessLayer import elaborate_text as elaboration, translate_text as translation, elaborate_user_request as e_u_r
 from procedure_recipe.ProcessCentricLayer import get_procedure_translated as g_p_t
 
-from procedure_recipe.interfaces import ListOfRecipes, RecipeInfo, TranslationRequest, ProcedureRequest
+from procedure_recipe.interfaces import ListOfRecipes, RecipeInfo, TranslationRequest, ProcedureRequest, ObjectFromDb
 
 app = FastAPI(
     title="Documentation",
@@ -69,26 +69,26 @@ def make_login(request: auth_interfaces.LoginRequest):
 #################################
 
 @app.get("/get-meal-plans-db", status_code=200, tags=["Procedure retrieval"])
-def get_meal_plans_db(username: str):
+def get_meal_plans_db(access_token: str):
     """It gives back a list of all meal planners created for a given user
 
     Args:\n
-        username: str # The username of the user we want to get meal plans
+        access_token: '{token}' # The access_token certifying user we want to get meal plans of
 
     Returns:\n
-        {"plans_response": list}   #list of meal plans objects generated
+        {"plans_response": list}   #list of meal plans objects generated, with all info gained from db
+        \nor\n
+        {"status_code":401, "detail":"Unauthorized: token not  or missing or internal server error"}
     """
-    return db_meal_plans.get_meal_plans_by_user(username)
+    return db_meal_plans.get_meal_plans_by_user(access_token)
 
-@app.get("/adapt-meal-plans", status_code=200, tags=["Procedure retrieval"])
-def adapt_meal_plans(request: Request):
-    """It is used to retrieve only the meaningful information from the object in database, sorted in creation date desc
-
-    Header:\n
-        Authorization: 'Bearer {token}' # Requested the access_token to retrieve this information
+@app.post("/adapt-meal-plans", status_code=200, tags=["Procedure retrieval"])
+def adapt_meal_plans(objectFromDb: ObjectFromDb):
+    """It is used to retrieve only the meaningful information from the object got by database, sorted in creation date desc
 
     Returns:\n
         {
+            "status_code": 200,
             "meal_plans_number": int, #number of meal planners
             "data": [{
                 date_meal_plan: str,
@@ -97,7 +97,30 @@ def adapt_meal_plans(request: Request):
             }]
         }   #list of meal plans objects with information of the date, number of recipes and all recipes generated
     """
-    return m_p_adapt.meal_plans_adapter(request)
+    return m_p_adapt.meal_plans_adapter(objectFromDb)
+
+@app.get("/get-old-meal-plans", status_code=200, tags=["Procedure retrieval"])
+def get_old_meal_plans(access_token: str):
+    """
+    Manage the GET reuquest of the user for recovering the old meal plans.
+    
+    Args:\n
+        access_token: '{token}' # The access_token certifying user we want to get meal plans of
+
+    Returns:\n
+        {
+            "status_code": 200,
+            "meal_plans_number": int, #number of meal planners
+            "data": [{
+                date_meal_plan: str,
+                recipes_number: int,
+                recipes_titles: list[str]
+            }]
+        }   #list of meal plans objects with information of the date, number of recipes and all recipes generated
+        \nor\n
+        {"status_code":401, "detail":"Unauthorized: token not  or missing or internal server error"}
+    """
+    return e_u_r.user_old_meal_plans(access_token)
 
 @app.get("/get-recipe-by-name", status_code=200, tags=["Procedure retrieval"])
 def get_recipe(nameRecipe: str):
@@ -164,7 +187,6 @@ def get_translation_text(translationBody: TranslationRequest):
         {"status_code":400, "detail":"Provide a target language in this list: [\"IT\", \"EN-GB\", \"FR\", \"DE\", \"ES\", \"PT-PT\", \"NL\", \"ZH\"]!"} 
     """
     return translation.translate(translationBody)
-
 
 @app.post("/procedure_translated", status_code=200, tags=["Procedure retrieval"])
 def get_procedure_translated(request: ProcedureRequest):

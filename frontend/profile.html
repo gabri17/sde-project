@@ -207,15 +207,12 @@
 
             try {
                 // Effettua la chiamata all'API
-                const response = await fetch("http://127.0.0.1:8000/adapt-meal-plans", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
+                const response = await fetch("http://127.0.0.1:8000/get-old-meal-plans?access_token=" + token, {
+                    method: "GET"
                 });
 
                 const data = await response.json();
-                if (response.status == 200) {
+                if (data.status_code == 200) {
                     
                     if(data["meal_plans_number"] == 0){
                         document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Al momento hai 0 meal plans!</p>"
@@ -229,7 +226,7 @@
                         document.getElementById('tableContainer').classList.remove('d-none')
                     }
 
-                } else if(response.status == 401) {
+                } else if(response.status_code == 401) {
                     document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'> ${data.detail}! Reindirizzamento alla pagina di login!</p>`;
                     setTimeout(() => {
                         window.location.href='http://127.0.0.1:8000/page/login';
