@@ -82,19 +82,20 @@ def get_meal_plans_db(username: str):
 
 @app.get("/adapt-meal-plans", status_code=200, tags=["Procedure retrieval"])
 def adapt_meal_plans(request: Request):
-    """It is used to retrieve 
+    """It is used to retrieve only the meaningful information from the object in database, sorted in creation date desc
 
     Header:\n
         Authorization: 'Bearer {token}' # Requested the access_token to retrieve this information
 
     Returns:\n
         {
-        "meal_plans_number": int, #number of meal planners
-        "data": [{
-            date_meal_plan: str,
-            recipes_number: int,
-            recipes_titles: list[str]
-        }]}   #list of meal plans objects with information of the date, number of recipes and all recipes generated
+            "meal_plans_number": int, #number of meal planners
+            "data": [{
+                date_meal_plan: str,
+                recipes_number: int,
+                recipes_titles: list[str]
+            }]
+        }   #list of meal plans objects with information of the date, number of recipes and all recipes generated
     """
     return m_p_adapt.meal_plans_adapter(request)
 
@@ -104,10 +105,10 @@ def get_recipe(nameRecipe: str):
     GET request to spoonacular (https://spoonacular.com/food-api/docs) to get some info of the recipe with the NAME passed.
     
     Args:\n
-        nameRecipe: the name of the recipe we want to find
+        nameRecipe: str #the name of the recipe we want to find
 
     Returns:\n
-        an object with the results got.\n
+        an object with the results got, with various fields.\n
         In the 'results' field a list with all the recipes associated with that name (if it's the exact name just one recipe)
     """
     return get_recipe_by_name.get_recipe_by_name(nameRecipe)
@@ -115,7 +116,7 @@ def get_recipe(nameRecipe: str):
 @app.post("/id-from-recipes", status_code=200, tags=["Procedure retrieval"])
 def get_id_from_recipes(listOfRecipes: ListOfRecipes):
     """
-    Given a list of recipes returns the id of the first recipe.
+    Given a list of recipes (we pass the one return by the /get-recipe-by-name API), it returns the id of the first recipe.
 
     Returns:\n
         {"id": {id of first recipe}, "status_code": 200}
@@ -128,10 +129,10 @@ def get_id_from_recipes(listOfRecipes: ListOfRecipes):
 def get_recipe_information(id):
     """
     GET request to spoonacular (https://spoonacular.com/food-api/docs) to get huge details of the recipe with the ID passed.\n
-    Then we return only the relevant to us
+    Then we return only the relevant information to us.
     
     Args:\n
-        id: id of the recipe we want to get details of
+        id: int #id of the recipe we want to get details of
 
     Returns:\n
         {
@@ -148,7 +149,7 @@ def elaborate_text(recipe_info: RecipeInfo):
     Elaborate the object returned by /info-from-id and get a receipt string
 
     Returns:\n
-        string with the procedure to follow for the specific receipt
+        str #string with the procedure to follow for the specific receipt
     """
     return elaboration.get_procedure_text_from_info(recipe_info)
 
@@ -158,7 +159,9 @@ def get_translation_text(translationBody: TranslationRequest):
     Given an array of string and a target language, it translates the strings in the target language.
     
     Returns:\n
-        {"translated_text": List[str]} 
+        {"translated_text": List[str]}
+        \nor\n
+        {"status_code":400, "detail":"Provide a target language in this list: [\"IT\", \"EN-GB\", \"FR\", \"DE\", \"ES\", \"PT-PT\", \"NL\", \"ZH\"]!"} 
     """
     return translation.translate(translationBody)
 
@@ -184,7 +187,7 @@ def get_procedure_translated(request: ProcedureRequest):
 
 @app.get("/meal-plan", status_code=200, tags=["Meal plan creation"])
 def make_meal_plan(filters: str, response: Response, token: str = ""):
-    """Creates and returns a .pdf file containing a meal plan sttarting from a series of filters
+    """It implements the whole composition: it creates and returns a .pdf file containing a meal plan sttarting from a series of filters
 
     Args:\n
         filters: str # Example: "vegan, gluten-free"
