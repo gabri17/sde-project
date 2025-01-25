@@ -20,7 +20,7 @@ This Meal Planner web service is capable of creating daily meal plans given any 
    - Windows Command Prompt:
     `venv\Scripts\activate.bat`
 
-3. Install all depencies:
+3. Install all dependencies:
     `pip install -r requirements.txt`
 
 4. Run the main script:
