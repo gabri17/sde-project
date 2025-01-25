@@ -4,7 +4,6 @@
 /src/*.pdf
 /venv_prova
 /src/har_and_cookies
-/src/environment.py
 __pycache__/
 /src/authentication/environment.py
 /src/meal_planner/DataLayer/environment.py
