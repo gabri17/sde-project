@@ -8,7 +8,11 @@ def get_user(username: str):
     users_collection = db['Users']
 
     query = {"username": username}
-    return users_collection.find_one(query)
+    obj = users_collection.find_one(query)
+    if(obj is None):
+        return obj
+    obj["_id"] = str(obj["_id"])    #necessary otherwise the object returned by MongoDB is returnable
+    return obj
 
 def save_user(username: str, password: str):
 
@@ -29,6 +33,7 @@ def save_user(username: str, password: str):
 
     
         print(f"User '{inserted_user["username"]}' has been successfully inserted.")
+        inserted_user["_id"] = str(inserted_user["_id"]) #necessary otherwise the object returned by MongoDB is returnable
         return inserted_user
     else:
         return None
