@@ -198,7 +198,7 @@
             document.getElementById('tableContainer').classList.add('d-none')
 
             if (!token) {
-                document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Access token non trovato! Reindirizzamento alla pagina di login!</p>`;
+                document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Access token not found! Login successful! You will be redirected to the login page!</p>`;
                 setTimeout(() => {
                     window.location.href='http://127.0.0.1:8000/page/login';
                 }, 2000);
@@ -215,11 +215,11 @@
                 if (data.status_code == 200) {
                     
                     if(data["meal_plans_number"] == 0){
-                        document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Al momento hai 0 meal plans!</p>"
+                        document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>At the moment you have 0 meal plans!</p>"
                     }
                     else {
                         const n_mp = data["meal_plans_number"];
-                        document.getElementById("responseMessage").innerHTML = `<p class='alert alert-success'>Al momento hai ${n_mp} meal plans!</p>`
+                        document.getElementById("responseMessage").innerHTML = `<p class='alert alert-success'>At the moment you have ${n_mp} meal plans!</p>`
 
                         const meal_plans = data["data"];
                         populateTable(meal_plans);
@@ -227,7 +227,7 @@
                     }
 
                 } else if(response.status_code == 401) {
-                    document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'> ${data.detail}! Reindirizzamento alla pagina di login!</p>`;
+                    document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'> ${data.detail}! You will be redirected to the login page!</p>`;
                     setTimeout(() => {
                         window.location.href='http://127.0.0.1:8000/page/login';
                     }, 2000);

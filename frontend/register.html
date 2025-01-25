@@ -75,7 +75,7 @@
 
                 const data = await response.json();
                 if (data["status_code"] == 200) {
-                    document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Registrazione riuscita! Vai al <a href=\"login\">login</a>! </p>";
+                    document.getElementById("responseMessage").innerHTML = "<p class='alert alert-success'>Registration succeeded! Go to <a href=\"login\">login</a>! </p>";
                 } else {
                     document.getElementById("responseMessage").innerHTML = `<p class='alert alert-danger'>Errore: ${data.detail}</p>`;
                 }
