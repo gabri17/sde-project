@@ -1,9 +1,5 @@
 from procedure_recipe.interfaces import ProcedureRequest, ListOfRecipes
 
-from procedure_recipe.AdapterLayer import meal_plans_adapter as m_p_adapt, get_id_from_recipes as g_i_f_rec
-from procedure_recipe.DataLayer import db_meal_plans, get_recipe_by_name, get_recipe_info_from_id 
-from procedure_recipe.BusinessLayer import elaborate_text as elaboration, translate_text as translation
-
 import requests
 
 API_URL = "http://127.0.0.1:8000"

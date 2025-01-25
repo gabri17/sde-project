@@ -15,9 +15,9 @@ from meal_planner.DataLayer.db_upload import insert_plan_db
 from authentication.BusinessLayer import make_login as m_login, make_register as m_register
 from authentication import interfaces as auth_interfaces
 
-from procedure_recipe.AdapterLayer import meal_plans_adapter as m_p_adapt, get_id_from_recipes as g_i_f_rec
+from procedure_recipe.AdapterLayer import elaborate_text as elaboration, meal_plans_adapter as m_p_adapt, get_id_from_recipes as g_i_f_rec
 from procedure_recipe.DataLayer import db_meal_plans, get_recipe_by_name, get_recipe_info_from_id 
-from procedure_recipe.BusinessLayer import elaborate_text as elaboration, translate_text as translation, elaborate_user_request as e_u_r
+from procedure_recipe.BusinessLayer import translate_text as translation, elaborate_user_request as e_u_r
 from procedure_recipe.ProcessCentricLayer import get_procedure_translated as g_p_t
 
 from procedure_recipe.interfaces import ListOfRecipes, RecipeInfo, TranslationRequest, ProcedureRequest, ObjectFromDb
