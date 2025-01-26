@@ -274,7 +274,8 @@ def get_recipes(filters: str):
         filters: str # Example: "vegan, gluten-free"
 
     Returns:\n
-        The JSON returned by the spoonacular API
+        an object with the results got, with various fields.
+        In the 'results' field a list with all the recipes associated with that filters.
     """
     return r_getter.get_recipes_with_filter(filters)
 
@@ -370,7 +371,7 @@ def search_images(recipe_names: Dict[str, List[str]]):
     Args:\n
         The JSON returned by the /ingredients-adapter endpoint, which is seen as:
 
-        recipe_names: Dict[str, List[str]]
+        names: Dict[str, List[str]] # example: {"names": ["Recipe1", "Recipe2"]}
 
     Returns:\n
         {
