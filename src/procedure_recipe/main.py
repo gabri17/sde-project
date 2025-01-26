@@ -2,8 +2,7 @@ from fastapi import HTTPException #type: ignore
 from pydantic import BaseModel #type: ignore
 from typing import List, Dict
 from procedure_recipe import get_recipe, get_id_from_recipe, get_info_from_id, get_procedure_text_from_info
-import requests
-#TODO: usare auth0? https://auth0.com/blog/how-to-handle-jwt-in-python
+import requests #type: ignore
 
 class TranslationRequest(BaseModel):
     text: str
