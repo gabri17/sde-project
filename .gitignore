@@ -7,4 +7,4 @@
 __pycache__/
 /src/authentication/environment.py
 /src/meal_planner/DataLayer/environment.py
-./src/environment.py
+environment.py
