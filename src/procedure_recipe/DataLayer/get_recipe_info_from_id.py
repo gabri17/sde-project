@@ -1,6 +1,7 @@
 import requests #type: ignore
 
-API_KEY = "521555a76d7d411a83bbd678d50162bd"
+from environment import API_KEY_SPOONACULAR as API_KEY
+
 API_URL = "https://api.spoonacular.com/recipes/informationBulk"
 
 def get_info_from_id(id):

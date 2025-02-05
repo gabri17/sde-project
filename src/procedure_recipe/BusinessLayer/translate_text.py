@@ -2,7 +2,8 @@ from procedure_recipe.interfaces import TranslationRequest
 import requests
 
 API_URL = "https://api-free.deepl.com/v2/translate"
-API_KEY = "2dc8af52-e7d2-4150-9610-866a482a29ae:fx"
+
+from environment import API_KEY_DEEPL as API_KEY
 
 def translate(request: TranslationRequest):
 

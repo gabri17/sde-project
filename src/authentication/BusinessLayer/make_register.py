@@ -1,5 +1,4 @@
 from authentication.interfaces import LoginRequest
-from authentication.DataLayer import db_users
 from authentication.BusinessLayer import password_encrypter
 
 import requests

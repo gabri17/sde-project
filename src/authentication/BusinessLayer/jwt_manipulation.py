@@ -1,7 +1,7 @@
 import jwt
 import datetime
 
-SECRET_KEY = 'super_segreto_shhhh'
+from environment import SECRET_KEY
 
 #not services, just auxiliary functions used to generate jwt in login service and verify it when needed
 
